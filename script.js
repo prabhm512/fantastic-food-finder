@@ -9,7 +9,7 @@ var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: currLocation,
-        zoom: 14,
+        zoom: 12,
     });
     service = new google.maps.places.PlacesService(map);
     // when the map is set up do the call
