@@ -7,12 +7,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fantastic Food Finder</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt2X0ZpGPthNCfOYHNS2fNY57EZkUy5A&callback=initMap&libraries=places&v=weekly" defer></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt2X0ZpGPthNCfOYHNS2fNY57EZkUy5A&callback=initMap&libraries=places&v=weekly"
+      defer
+    ></script>
     <!-- moved initMap callback to script.js -->
   </head>
   <body>
-    <div id="map"></div>
+    <nav class="navbar navbar-dark bg-dark">
+      <span class="navbar-brand mb-0 h1">Fantastic Food Finder</span>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-3">
+          <ul class="list-group">
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+          </ul>
+        </div>
+        <div class="col-9">
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="script.js"></script>
