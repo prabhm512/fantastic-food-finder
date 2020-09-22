@@ -1,8 +1,20 @@
 "use strict";
 
 var map;
+var service;
+
 // hard code location for initial testing
 var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: currLocation,
+        zoom: 14,
+    });
+    service = new google.maps.places.PlacesService(map);
+    // when the map is set up do the call
+    getRestaurants();
+}
 
 function createMarker(place) {
     // first create the image for the marker
@@ -23,15 +35,6 @@ function createMarker(place) {
     });
 }
 
-function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), {
-        center: currLocation,
-        zoom: 12,
-    });
-
-    getRestaurants();
-}
-
 function getRestaurants() {
     var request = {
         location: currLocation,
@@ -39,7 +42,6 @@ function getRestaurants() {
         query: "restaurant",
     };
 
-    var service = new google.maps.places.PlacesService(map);
     service.textSearch(request, callback);
 
     function callback(results, status) {
@@ -52,5 +54,3 @@ function getRestaurants() {
         }
     }
 }
-
-initMap();
