@@ -1,7 +1,7 @@
 "use strict";
 
 window.map = undefined;
-var service;
+var service, lat, lng;
 
 // hard code location for initial testing
 // var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
@@ -34,7 +34,9 @@ function getLocation() {
 }
 
 function showPosition(position) {
-  moveToLocation(position.coords.latitude, position.coords.longitude);
+  lat = position.coords.latitude;
+  lng = position.coords.longitude;
+  moveToLocation(lat, lng);
 }
 
 getLocation();
@@ -73,6 +75,14 @@ function getRestaurants() {
       for (var i = 0; i < results.length; i++) {
         //var place = results[i];
         createMarker(results[i]);
+
+        // Get names of restaurants within specified radius
+        var name = results[i].name;
+
+        // Display results on list
+        var li = $("<li>").attr("class", "list-group-item");
+        li.append(name);
+        $(".list-group").append(li);
       }
     }
   }
