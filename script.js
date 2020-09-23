@@ -81,7 +81,9 @@ function getRestaurants() {
 
         // Display results on list
         var li = $("<li>").attr("class", "list-group-item");
-        li.append(name);
+        var button = $("<button>").attr("id", "button-" + i);
+        button.append(name);
+        li.append(button);
         $(".list-group").append(li);
       }
     }
