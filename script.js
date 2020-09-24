@@ -10,6 +10,7 @@ var service, lat, lng;
 // The map and service vars have to be set here as the method isn't run until the api returns.
 // Any use of the map and service must be done after this method fires.
 function initMap() {
+  
     const mapOptions = {
         center: new google.maps.LatLng(0, 0),
         zoom: 12,
@@ -106,4 +107,5 @@ function getRestaurants() {
             processResults(results);
         }
     }
+  }
 }
