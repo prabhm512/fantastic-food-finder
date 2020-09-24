@@ -1,7 +1,9 @@
 "use strict";
+const RESULTS_STORAGE_NAME = "searchResults";
 
 window.map = undefined;
 var service, lat, lng;
+var savedPlaces = [];
 
 // hard code location for initial testing
 // var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
@@ -77,21 +79,61 @@ function createMarker(place) {
 
 // deal with the returned array of places
 function processResults(places) {
-  // first clear the list items
-  $(".list-group").innerHTML = "";
+    // save to local storage
+    localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
+    // and then load the saved places into the array
+    loadSearchResults();
 
-  // process each returned place
-  for (var i = 0; i < places.length; i++) {
-    // add a marker to the map
-    createMarker(places[i]);
-    // Display results on list
-    var li = $("<li>").attr("class", "list-group-item");
-    var button = $("<button>").attr("id", "button-" + i);
-    button.append(places[i].name);
-    li.append(button);
-    $(".list-group").append(li);
-  }
+    // before displaying apply the sort
+    sortPlaces("rating"); // use rating by default until we get the html in
+    //console.log("after sorting: " + JSON.stringify(savedPlaces));
+
+    // first clear the list items
+    $(".list-group").innerHTML = "";
+
+    // process each returned place
+    for (var i = 0; i < savedPlaces.length; i++) {
+        // add a marker to the map
+        createMarker(savedPlaces[i]);
+        // Display results on list
+        var li = $("<li>").attr("class", "list-group-item");
+        var button = $("<button>").attr("id", "button-" + i);
+        button.append(savedPlaces[i].name);
+        li.append(button);
+        $(".list-group").append(li);
+    }
 }
+
+// get results from local storage and load them into the array
+function loadSearchResults() {
+    // load the items from storage
+    var storedPlaces = localStorage.getItem(RESULTS_STORAGE_NAME);
+    if (storedPlaces) {
+        savedPlaces = JSON.parse(storedPlaces);
+    }
+} // loadSearchResults
+
+// sort the savedPlaces array based on hte input parameter
+function sortPlaces(sortType) {
+    if (sortType === "priceLoHi") {
+        // search by price low to high
+        savedPlaces.sort(function (a, b) {
+            return a.price_level - b.price_level;
+        });
+    }
+    else if (sortType === "priceHiLo") {
+        // search by price high to low
+        savedPlaces.sort(function (a, b) {
+            return b.price_level - a.price_level;
+        });
+    }
+    else if (sortType === "rating") {
+        // search by rating high to low
+        savedPlaces.sort(function (a, b) {
+            return b.rating - a.rating;
+        });
+    }
+} // sortPlaces
 
 function getRestaurants() {
   var request = {
@@ -137,7 +179,6 @@ function images() {
     },
   });
 }
-
 // Show images in gallery
 function showSlides(n) {
   var i;
@@ -170,3 +211,4 @@ $(".prev").on("click", function () {
   slideIndex -= 1;
   showSlides();
 });
+
