@@ -190,21 +190,33 @@ function collections() {
 function renderGallery() {
   let slides, caption, img;
   for (let i = 0; i < zomatoResponse.images.length; i++) {
-    slides = $("<div>").attr("class", "mySlides slide-" + i);
+    // slides = $("<div>").attr("class", "mySlides slide-" + i);
     caption = $("<div>").attr("class", "text");
     caption.append(zomatoResponse.name[i]); // Restaurant name retreived from zomato database
     caption.css("font-weight", "bold");
-    caption.css("color", "black");
-    img = $("<img>");
-    img.attr("src", zomatoResponse.images[i]); // Restaurant image retreived from zomato database
-    img.css("width", "350px");
-    img.css("height", "180px");
+    caption.css("background-color", "black");
+    caption.css("color", "white");
+    caption.css("font-size", "19px");
+    // img = $("<img>");
+    // img.attr("src", zomatoResponse.images[i]); // Restaurant image retreived from zomato database
+    // img.css("width", "350px");
+    // img.css("height", "180px");
 
-    slides.append(img);
+    // slides.append(img);
+    // slides.append(caption);
+    // $(".slideshow-container").append(slides);
+
+    slides = $("<button>");
+    slides.attr("class", "swiper-slide");
+    slides.attr(
+      "style",
+      "background-image: url(" + zomatoResponse.images[i] + ")"
+    );
     slides.append(caption);
-    $(".slideshow-container").append(slides);
+    $(".swiper-wrapper").append(slides);
+    // caption = $("<div>").attr("class", "");
   }
-  showSlides(slideIndex);
+  // showSlides(slideIndex);
 }
 
 // Show images in gallery
@@ -237,6 +249,27 @@ function showSlides(n) {
   //   }
   // }, 5000);
 }
+
+// Swiper
+new Swiper(".swiper-container", {
+  // Initially, swiper API rendered only when the page was resized.
+  // observer & observeParents allow swiper to render on page load.
+  observer: true,
+  observeParents: true,
+
+  // Basic swiper paraemeters
+  effect: "cube",
+  grabCursor: true,
+  cubeEffect: {
+    shadow: true,
+    slideShadows: true,
+    shadowOffset: 20,
+    shadowScale: 0.94,
+  },
+  pagination: {
+    el: ".swiper-pagination",
+  },
+});
 
 $(".next").on("click", function () {
   // ** Covert back to 1 on reaching last image.
