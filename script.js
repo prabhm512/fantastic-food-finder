@@ -4,6 +4,8 @@ const RESULTS_STORAGE_NAME = "searchResults";
 window.map = undefined;
 var service, lat, lng;
 var savedPlaces = [];
+var zomatoResponse = {};
+var slideIndex = 1; // Updates gallery images
 
 // hard code location for initial testing
 // var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
@@ -28,6 +30,7 @@ function moveToLocation(lat, lng) {
   service = new google.maps.places.PlacesService(map);
   // when the map is set up do the call
   getRestaurants();
+  collections(); // Zomato collections for user location
 }
 
 function getLocation() {
@@ -79,60 +82,58 @@ function createMarker(place) {
 
 // deal with the returned array of places
 function processResults(places) {
-    // save to local storage
-    localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
-    // and then load the saved places into the array
-    loadSearchResults();
+  // save to local storage
+  localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
+  // and then load the saved places into the array
+  loadSearchResults();
 
-    // before displaying apply the sort
-    sortPlaces("rating"); // use rating by default until we get the html in
-    //console.log("after sorting: " + JSON.stringify(savedPlaces));
+  // before displaying apply the sort
+  sortPlaces("rating"); // use rating by default until we get the html in
+  //console.log("after sorting: " + JSON.stringify(savedPlaces));
 
-    // first clear the list items
-    $(".list-group").innerHTML = "";
+  // first clear the list items
+  $(".list-group").innerHTML = "";
 
-    // process each returned place
-    for (var i = 0; i < savedPlaces.length; i++) {
-        // add a marker to the map
-        createMarker(savedPlaces[i]);
-        // Display results on list
-        var li = $("<li>").attr("class", "list-group-item");
-        var button = $("<button>").attr("id", "button-" + i);
-        button.append(savedPlaces[i].name);
-        li.append(button);
-        $(".list-group").append(li);
-    }
+  // process each returned place
+  for (var i = 0; i < savedPlaces.length; i++) {
+    // add a marker to the map
+    createMarker(savedPlaces[i]);
+    // Display results on list
+    var li = $("<li>").attr("class", "list-group-item");
+    var button = $("<button>").attr("id", "button-" + i);
+    button.append(savedPlaces[i].name);
+    li.append(button);
+    $(".list-group").append(li);
+  }
 }
 
 // get results from local storage and load them into the array
 function loadSearchResults() {
-    // load the items from storage
-    var storedPlaces = localStorage.getItem(RESULTS_STORAGE_NAME);
-    if (storedPlaces) {
-        savedPlaces = JSON.parse(storedPlaces);
-    }
+  // load the items from storage
+  var storedPlaces = localStorage.getItem(RESULTS_STORAGE_NAME);
+  if (storedPlaces) {
+    savedPlaces = JSON.parse(storedPlaces);
+  }
 } // loadSearchResults
 
 // sort the savedPlaces array based on hte input parameter
 function sortPlaces(sortType) {
-    if (sortType === "priceLoHi") {
-        // search by price low to high
-        savedPlaces.sort(function (a, b) {
-            return a.price_level - b.price_level;
-        });
-    }
-    else if (sortType === "priceHiLo") {
-        // search by price high to low
-        savedPlaces.sort(function (a, b) {
-            return b.price_level - a.price_level;
-        });
-    }
-    else if (sortType === "rating") {
-        // search by rating high to low
-        savedPlaces.sort(function (a, b) {
-            return b.rating - a.rating;
-        });
-    }
+  if (sortType === "priceLoHi") {
+    // search by price low to high
+    savedPlaces.sort(function (a, b) {
+      return a.price_level - b.price_level;
+    });
+  } else if (sortType === "priceHiLo") {
+    // search by price high to low
+    savedPlaces.sort(function (a, b) {
+      return b.price_level - a.price_level;
+    });
+  } else if (sortType === "rating") {
+    // search by rating high to low
+    savedPlaces.sort(function (a, b) {
+      return b.rating - a.rating;
+    });
+  }
 } // sortPlaces
 
 function getRestaurants() {
@@ -148,42 +149,47 @@ function getRestaurants() {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       console.log(results);
       processResults(results);
-      images();
     }
   }
 }
 
-var slideIndex = 1;
-showSlides(slideIndex);
-
-function currentSlide(n) {
-  showSlides((slideIndex = n));
-}
-
-function images() {
+function collections() {
   console.log(lat, lng);
   $.ajax({
     url:
-      "https://developers.zomato.com/api/v2.1/search?lat=" +
+      "https://developers.zomato.com/api/v2.1/search?collection_id=1&lat=" +
       lat +
       "&lon=" +
-      lng +
-      "&radius=1000",
+      lng,
     dataType: "json",
     async: true,
     beforeSend: function (xhr) {
       xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
     }, // This inserts the api key into the HTTP header
     success: function (response) {
-      console.log(response);
+      zomatoResponse.image = response.restaurants[0].restaurant.featured_image;
+      console.log(zomatoResponse.image);
+      showSlides(slideIndex);
     },
   });
 }
+
+function currentSlide(n) {
+  showSlides((slideIndex = n));
+}
+
 // Show images in gallery
 function showSlides(n) {
   var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("dot");
+  // var slides = document.getElementsByClassName("mySlides");
+  // var dots = document.getElementsByClassName("dot");
+
+  var slides = $("<div>").attr("class", "mySlides");
+  var img = $("<img>").attr("src", zomatoResponse.image);
+
+  slides.append(img);
+  $(".slideshow-container").append(slides);
+
   if (n > slides.length) {
     slideIndex = 1;
   }
@@ -193,22 +199,20 @@ function showSlides(n) {
   for (i = 0; i < slides.length; i++) {
     slides[i].style.display = "none";
   }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
+  // for (i = 0; i < dots.length; i++) {
+  //   dots[i].className = dots[i].className.replace(" active", "");
+  // }
   slides[slideIndex - 1].style.display = "block";
-  dots[slideIndex - 1].className += " active";
+  // dots[slideIndex - 1].className += " active";
 }
 
 $(".next").on("click", function () {
   // ** Covert back to 1 on reaching last image.
   slideIndex += 1;
   showSlides();
-  console.log(slideIndex);
 });
 
 $(".prev").on("click", function () {
   slideIndex -= 1;
   showSlides();
 });
-
