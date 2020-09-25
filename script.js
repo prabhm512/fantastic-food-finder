@@ -4,7 +4,10 @@ const RESULTS_STORAGE_NAME = "searchResults";
 window.map = undefined;
 var service, lat, lng;
 var savedPlaces = [];
-var zomatoResponse = {};
+var zomatoResponse = {
+  images: [],
+  name: [],
+};
 var slideIndex = 1; // Updates gallery images
 
 // hard code location for initial testing
@@ -167,52 +170,84 @@ function collections() {
       xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
     }, // This inserts the api key into the HTTP header
     success: function (response) {
-      zomatoResponse.image = response.restaurants[0].restaurant.featured_image;
-      console.log(zomatoResponse.image);
-      showSlides(slideIndex);
+      for (var i = 0; i < 10; i++) {
+        zomatoResponse.images.push(
+          response.restaurants[i].restaurant.featured_image
+        );
+        zomatoResponse.name.push(response.restaurants[i].restaurant.name);
+      }
+      renderGallery();
     },
   });
 }
 
-function currentSlide(n) {
-  showSlides((slideIndex = n));
+// function currentSlide(n) {
+//   showSlides((slideIndex = n));
+// }
+
+// Renders zomato response to gallery
+
+function renderGallery() {
+  let slides, caption, img;
+  for (let i = 0; i < zomatoResponse.images.length; i++) {
+    slides = $("<div>").attr("class", "mySlides slide-" + i);
+    caption = $("<div>").attr("class", "text");
+    caption.append(zomatoResponse.name[i]); // Restaurant name retreived from zomato database
+    caption.css("font-weight", "bold");
+    caption.css("color", "black");
+    img = $("<img>");
+    img.attr("src", zomatoResponse.images[i]); // Restaurant image retreived from zomato database
+    img.css("width", "350px");
+    img.css("height", "180px");
+
+    slides.append(img);
+    slides.append(caption);
+    $(".slideshow-container").append(slides);
+  }
+  showSlides(slideIndex);
 }
 
 // Show images in gallery
 function showSlides(n) {
-  var i;
   // var slides = document.getElementsByClassName("mySlides");
   // var dots = document.getElementsByClassName("dot");
 
-  var slides = $("<div>").attr("class", "mySlides");
-  var img = $("<img>").attr("src", zomatoResponse.image);
-
-  slides.append(img);
-  $(".slideshow-container").append(slides);
-
-  if (n > slides.length) {
+  if (n > zomatoResponse.images.length) {
     slideIndex = 1;
   }
   if (n < 1) {
-    slideIndex = slides.length;
+    slideIndex = zomatoResponse.images.length;
   }
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
+  for (let i = 0; i < zomatoResponse.images.length; i++) {
+    $(".slide-" + i).attr("style", "display: none;");
   }
   // for (i = 0; i < dots.length; i++) {
   //   dots[i].className = dots[i].className.replace(" active", "");
   // }
-  slides[slideIndex - 1].style.display = "block";
+
+  $(".slide-" + (slideIndex - 1)).attr("style", "display: block;");
+
   // dots[slideIndex - 1].className += " active";
+  // setInterval(function () {
+  //   if (slideIndex < 1) {
+  //     slideIndex = 1;
+  //   } else {
+  //     showSlides();
+  //     slideIndex += 1;
+  //   }
+  // }, 5000);
 }
 
 $(".next").on("click", function () {
   // ** Covert back to 1 on reaching last image.
   slideIndex += 1;
-  showSlides();
+  showSlides(slideIndex);
 });
 
 $(".prev").on("click", function () {
   slideIndex -= 1;
-  showSlides();
+
+  if (slideIndex > 0) {
+    showSlides(slideIndex);
+  }
 });
