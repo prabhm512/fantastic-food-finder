@@ -48,6 +48,7 @@ function moveToLocation(lat, lng) {
   getRestaurants();
   trending(); // Zomato collections for user location
   cheapEats();
+  dateNight();
 }
 
 function getLocation() {
@@ -301,5 +302,66 @@ new Swiper(".swiper-container-1", {
   },
   pagination: {
     el: ".swiper-pagination-1",
+  },
+});
+
+function dateNight() {
+  $.ajax({
+    url:
+      "https://developers.zomato.com/api/v2.1/search?collection_id=46&lat=" +
+      lat +
+      "&lon=" +
+      lng,
+    dataType: "json",
+    async: true,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
+    }, // This inserts the api key into the HTTP header
+    success: function (response) {
+      for (var i = 0; i < 10; i++) {
+        zomatoResponse.zomatoDateNight.images.push(
+          response.restaurants[i].restaurant.featured_image
+        );
+        zomatoResponse.zomatoDateNight.name.push(
+          response.restaurants[i].restaurant.name
+        );
+      }
+      appendDateNight();
+    },
+  });
+}
+
+function appendDateNight() {
+  for (let i = 0; i < zomatoResponse.zomatoDateNight.images.length; i++) {
+    render();
+    caption.append(zomatoResponse.zomatoDateNight.name[i]); // Restaurant name retreived from zomato database
+
+    slides.attr(
+      "style",
+      "background-image: url(" + zomatoResponse.zomatoDateNight.images[i] + ")"
+    );
+    slides.append(caption);
+    $(".swiper-container-2 > .swiper-wrapper").append(slides);
+  }
+}
+
+// Swiper 2
+new Swiper(".swiper-container-2", {
+  // Initially, swiper API rendered only when the page was resized.
+  // observer & observeParents allow swiper to render on page load.
+  observer: true,
+  observeParents: true,
+
+  // Basic swiper paraemeters
+  effect: "cube",
+  grabCursor: true,
+  cubeEffect: {
+    shadow: true,
+    slideShadows: true,
+    shadowOffset: 20,
+    shadowScale: 0.94,
+  },
+  pagination: {
+    el: ".swiper-pagination-2",
   },
 });
