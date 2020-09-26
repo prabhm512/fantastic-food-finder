@@ -4,22 +4,11 @@ const RESULTS_STORAGE_NAME = "searchResults";
 window.map = undefined;
 var service, lat, lng;
 var savedPlaces = [];
-var zomatoResponse = {
-  zomatoTrending: {
-    images: [],
-    name: [],
-  },
-
-  zomatoCheapEats: {
-    images: [],
-    name: [],
-  },
-
-  zomatoDateNight: {
-    images: [],
-    name: [],
-  },
-};
+var zomatoResponse = [
+  { collection_id: "1", images: [], name: [] },
+  { collection_id: "434", images: [], name: [] },
+  { collection_id: "46", images: [], name: [] },
+];
 
 let slides, caption; // Updates gallery images & restaurant name
 
@@ -46,9 +35,9 @@ function moveToLocation(lat, lng) {
   service = new google.maps.places.PlacesService(map);
   // when the map is set up do the call
   getRestaurants();
-  trending(); // Zomato collections for user location
-  cheapEats();
-  dateNight();
+  createGalleries(); // Zomato collections for user location
+  // cheapEats();
+  // dateNight();
 }
 
 function getLocation() {
@@ -182,186 +171,65 @@ function render() {
   slides.attr("class", "swiper-slide");
 }
 
-function trending() {
-  $.ajax({
-    url:
-      "https://developers.zomato.com/api/v2.1/search?collection_id=1&lat=" +
-      lat +
-      "&lon=" +
-      lng,
-    dataType: "json",
-    async: true,
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
-    }, // This inserts the api key into the HTTP header
-    success: function (response) {
-      for (var i = 0; i < 10; i++) {
-        zomatoResponse.zomatoTrending.images.push(
-          response.restaurants[i].restaurant.featured_image
-        );
-        zomatoResponse.zomatoTrending.name.push(
-          response.restaurants[i].restaurant.name
-        );
-      }
-      appendTrending();
-    },
-  });
-}
+function createGalleries() {
+  for (let i = 0; i < zomatoResponse.length; i++) {
+    $.ajax({
+      url:
+        "https://developers.zomato.com/api/v2.1/search?collection_id=" +
+        zomatoResponse[i].collection_id +
+        "&lat=" +
+        lat +
+        "&lon=" +
+        lng,
+      dataType: "json",
+      async: true,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
+      }, // This inserts the api key into the HTTP header
+      success: function (response) {
+        // Create Swiper
+        new Swiper(".swiper-container-" + i, {
+          // Initially, swiper API rendered only when the page was resized.
+          // observer & observeParents allow swiper to render on page load.
+          observer: true,
+          observeParents: true,
 
-function appendTrending() {
-  for (let i = 0; i < zomatoResponse.zomatoTrending.images.length; i++) {
-    render();
+          // Basic swiper paraemeters
+          effect: "cube",
+          grabCursor: true,
+          cubeEffect: {
+            shadow: true,
+            slideShadows: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+          },
+          pagination: {
+            el: ".swiper-pagination-" + i,
+          },
+        });
 
-    caption.append(zomatoResponse.zomatoTrending.name[i]); // Restaurant name retreived from zomato database
+        // Push response to array
+        for (let j = 0; j < 10; j++) {
+          zomatoResponse[i].images.push(
+            response.restaurants[j].restaurant.featured_image
+          );
+          zomatoResponse[i].name.push(response.restaurants[j].restaurant.name);
+        }
 
-    slides.attr(
-      "style",
-      "background-image: url(" + zomatoResponse.zomatoTrending.images[i] + ")"
-    );
-    slides.append(caption);
-    $(".swiper-container-0 > .swiper-wrapper").append(slides);
+        // Render response on Swiper
+        for (let k = 0; k < 10; k++) {
+          render();
+
+          caption.append(zomatoResponse[i].name[k]); // Restaurant name retreived from zomato database
+
+          slides.attr(
+            "style",
+            "background-image: url(" + zomatoResponse[i].images[k] + ")"
+          );
+          slides.append(caption);
+          $(".swiper-container-" + i + " > .swiper-wrapper").append(slides);
+        }
+      },
+    });
   }
 }
-
-// Swiper 1
-new Swiper(".swiper-container-0", {
-  // Initially, swiper API rendered only when the page was resized.
-  // observer & observeParents allow swiper to render on page load.
-  observer: true,
-  observeParents: true,
-
-  // Basic swiper paraemeters
-  effect: "cube",
-  grabCursor: true,
-  cubeEffect: {
-    shadow: true,
-    slideShadows: true,
-    shadowOffset: 20,
-    shadowScale: 0.94,
-  },
-  pagination: {
-    el: ".swiper-pagination-0",
-  },
-});
-
-function cheapEats() {
-  $.ajax({
-    url:
-      "https://developers.zomato.com/api/v2.1/search?collection_id=434&lat=" +
-      lat +
-      "&lon=" +
-      lng,
-    dataType: "json",
-    async: true,
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
-    }, // This inserts the api key into the HTTP header
-    success: function (response) {
-      for (var i = 0; i < 10; i++) {
-        zomatoResponse.zomatoCheapEats.images.push(
-          response.restaurants[i].restaurant.featured_image
-        );
-        zomatoResponse.zomatoCheapEats.name.push(
-          response.restaurants[i].restaurant.name
-        );
-      }
-      appendCheapEats();
-    },
-  });
-}
-
-function appendCheapEats() {
-  for (let i = 0; i < zomatoResponse.zomatoCheapEats.images.length; i++) {
-    render();
-    caption.append(zomatoResponse.zomatoCheapEats.name[i]); // Restaurant name retreived from zomato database
-
-    slides.attr(
-      "style",
-      "background-image: url(" + zomatoResponse.zomatoCheapEats.images[i] + ")"
-    );
-    slides.append(caption);
-    $(".swiper-container-1 > .swiper-wrapper").append(slides);
-  }
-}
-
-// Swiper 2
-new Swiper(".swiper-container-1", {
-  // Initially, swiper API rendered only when the page was resized.
-  // observer & observeParents allow swiper to render on page load.
-  observer: true,
-  observeParents: true,
-
-  // Basic swiper paraemeters
-  effect: "cube",
-  grabCursor: true,
-  cubeEffect: {
-    shadow: true,
-    slideShadows: true,
-    shadowOffset: 20,
-    shadowScale: 0.94,
-  },
-  pagination: {
-    el: ".swiper-pagination-1",
-  },
-});
-
-function dateNight() {
-  $.ajax({
-    url:
-      "https://developers.zomato.com/api/v2.1/search?collection_id=46&lat=" +
-      lat +
-      "&lon=" +
-      lng,
-    dataType: "json",
-    async: true,
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
-    }, // This inserts the api key into the HTTP header
-    success: function (response) {
-      for (var i = 0; i < 10; i++) {
-        zomatoResponse.zomatoDateNight.images.push(
-          response.restaurants[i].restaurant.featured_image
-        );
-        zomatoResponse.zomatoDateNight.name.push(
-          response.restaurants[i].restaurant.name
-        );
-      }
-      appendDateNight();
-    },
-  });
-}
-
-function appendDateNight() {
-  for (let i = 0; i < zomatoResponse.zomatoDateNight.images.length; i++) {
-    render();
-    caption.append(zomatoResponse.zomatoDateNight.name[i]); // Restaurant name retreived from zomato database
-
-    slides.attr(
-      "style",
-      "background-image: url(" + zomatoResponse.zomatoDateNight.images[i] + ")"
-    );
-    slides.append(caption);
-    $(".swiper-container-2 > .swiper-wrapper").append(slides);
-  }
-}
-
-// Swiper 2
-new Swiper(".swiper-container-2", {
-  // Initially, swiper API rendered only when the page was resized.
-  // observer & observeParents allow swiper to render on page load.
-  observer: true,
-  observeParents: true,
-
-  // Basic swiper paraemeters
-  effect: "cube",
-  grabCursor: true,
-  cubeEffect: {
-    shadow: true,
-    slideShadows: true,
-    shadowOffset: 20,
-    shadowScale: 0.94,
-  },
-  pagination: {
-    el: ".swiper-pagination-2",
-  },
-});
