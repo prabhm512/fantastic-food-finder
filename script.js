@@ -171,6 +171,8 @@ function render() {
   slides.attr("class", "swiper-slide");
 }
 
+// Trending this week , Cheap Eats & Date Night Galleries
+
 function createGalleries() {
   for (let i = 0; i < zomatoResponse.length; i++) {
     $.ajax({

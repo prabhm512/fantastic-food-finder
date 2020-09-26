@@ -59,6 +59,9 @@ div[class*="swiper-container"] {
   background-size: cover;
 }
 
+div[class*="swiper-pagination"] {
+  margin-left: 25%;
+}
 /* On smaller screens, decrease text size */
 @media only screen and (max-width: 300px) {
   .prev,
