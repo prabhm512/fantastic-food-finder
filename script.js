@@ -21,7 +21,7 @@ var zomatoResponse = {
   },
 };
 
-var slideIndex = 1; // Updates gallery images
+let slides, caption; // Updates gallery images & restaurant name
 
 // hard code location for initial testing
 // var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
@@ -169,6 +169,17 @@ function getRestaurants() {
     }
   }
 }
+// Renders 3D cubes displaying restaurants
+function render() {
+  caption = $("<div>").attr("class", "text");
+  caption.css("font-weight", "bold");
+  caption.css("background-color", "black");
+  caption.css("color", "white");
+  caption.css("font-size", "19px");
+
+  slides = $("<button>");
+  slides.attr("class", "swiper-slide");
+}
 
 function trending() {
   $.ajax({
@@ -191,23 +202,17 @@ function trending() {
           response.restaurants[i].restaurant.name
         );
       }
-      renderTrending();
+      appendTrending();
     },
   });
 }
 
-function renderTrending() {
-  let slides, caption;
+function appendTrending() {
   for (let i = 0; i < zomatoResponse.zomatoTrending.images.length; i++) {
-    caption = $("<div>").attr("class", "text");
-    caption.append(zomatoResponse.zomatoTrending.name[i]); // Restaurant name retreived from zomato database
-    caption.css("font-weight", "bold");
-    caption.css("background-color", "black");
-    caption.css("color", "white");
-    caption.css("font-size", "19px");
+    render();
 
-    slides = $("<button>");
-    slides.attr("class", "swiper-slide");
+    caption.append(zomatoResponse.zomatoTrending.name[i]); // Restaurant name retreived from zomato database
+
     slides.attr(
       "style",
       "background-image: url(" + zomatoResponse.zomatoTrending.images[i] + ")"
@@ -217,7 +222,7 @@ function renderTrending() {
   }
 }
 
-// Swiper
+// Swiper 1
 new Swiper(".swiper-container-0", {
   // Initially, swiper API rendered only when the page was resized.
   // observer & observeParents allow swiper to render on page load.
@@ -259,24 +264,16 @@ function cheapEats() {
           response.restaurants[i].restaurant.name
         );
       }
-      console.log(zomatoResponse.zomatoCheapEats.name);
-      renderCheapEats();
+      appendCheapEats();
     },
   });
 }
 
-function renderCheapEats() {
-  let slides, caption;
+function appendCheapEats() {
   for (let i = 0; i < zomatoResponse.zomatoCheapEats.images.length; i++) {
-    caption = $("<div>").attr("class", "text");
+    render();
     caption.append(zomatoResponse.zomatoCheapEats.name[i]); // Restaurant name retreived from zomato database
-    caption.css("font-weight", "bold");
-    caption.css("background-color", "black");
-    caption.css("color", "white");
-    caption.css("font-size", "19px");
 
-    slides = $("<button>");
-    slides.attr("class", "swiper-slide");
     slides.attr(
       "style",
       "background-image: url(" + zomatoResponse.zomatoCheapEats.images[i] + ")"
@@ -286,6 +283,7 @@ function renderCheapEats() {
   }
 }
 
+// Swiper 2
 new Swiper(".swiper-container-1", {
   // Initially, swiper API rendered only when the page was resized.
   // observer & observeParents allow swiper to render on page load.
