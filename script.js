@@ -6,6 +6,7 @@ var service, lat, lng;
 var savedPlaces = [];
 
 var zomatoResponse = [
+
   {
     collection_id: "1",
     icon:
@@ -58,49 +59,49 @@ var counter = 0; // To uniquely identify gallery buttons
 // The map and service vars have to be set here as the method isn't run until the api returns.
 // Any use of the map and service must be done after this method fires.
 function initMap() {
-  const mapOptions = {
-    center: new google.maps.LatLng(0, 0),
-    zoom: 12,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-  };
+    const mapOptions = {
+        center: new google.maps.LatLng(0, 0),
+        zoom: 12,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+    };
 
-  window.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-  infoWindow = new google.maps.InfoWindow();
+    window.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    infoWindow = new google.maps.InfoWindow();
 }
 
 function moveToLocation(lat, lng) {
-  const center = new google.maps.LatLng(lat, lng);
-  window.map.panTo(center);
+    const center = new google.maps.LatLng(lat, lng);
+    window.map.panTo(center);
 
-  service = new google.maps.places.PlacesService(map);
-  // when the map is set up do the call
-  getRestaurants();
-  createGalleries(); // Zomato collections for user location
+    service = new google.maps.places.PlacesService(map);
+    // when the map is set up do the call
+    getRestaurants();
+    createGalleries(); // Zomato collections for user location
 }
 
 function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
 }
 
 function showPosition(position) {
-  lat = position.coords.latitude;
-  lng = position.coords.longitude;
-  moveToLocation(lat, lng);
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+    moveToLocation(lat, lng);
 }
 
 getLocation();
 
 // show the info window for the given marker
 function doClickMarker(marker) {
-  infoWindow.setOptions({
-    content: marker.descrip,
-  });
+    infoWindow.setOptions({
+        content: marker.descrip,
+    });
 
-  infoWindow.open(map, marker);
+    infoWindow.open(map, marker);
 }
 
 // add a marker to the map for the given place
@@ -162,112 +163,112 @@ function createMarker(place) {
 
 // clean up the map markers
 function clearMapMarkers() {
-  for (let i = 0; i < mapMarkers.length; i++) {
-    mapMarkers[i].setMap(null);
-  }
+    for (let i = 0; i < mapMarkers.length; i++) {
+        mapMarkers[i].setMap(null);
+    }
 
-  mapMarkers = [];
+    mapMarkers = [];
 }
 
 // fired on the click off each button in the places list
 function doClickButton() {
-  // buttons are given an id of "button-" + i so slice off the last char (or 2 if > 9) to get the number (index to array)
-  var btnId = $(this).attr("id");
-  var btnIndex =
-    btnId.length == 8
-      ? $(this).attr("id").slice(-1)
-      : $(this).attr("id").slice(-2);
-  console.log(btnIndex);
-  doClickMarker(mapMarkers[btnIndex]);
+    // buttons are given an id of "button-" + i so slice off the last char (or 2 if > 9) to get the number (index to array)
+    var btnId = $(this).attr("id");
+    var btnIndex =
+        btnId.length == 8
+            ? $(this).attr("id").slice(-1)
+            : $(this).attr("id").slice(-2);
+    console.log(btnIndex);
+    doClickMarker(mapMarkers[btnIndex]);
 }
 
 // deal with the returned array of places
 function processResults(places) {
-  // save to local storage
-  localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
-  // and then load the saved places into the array
-  loadSearchResults();
+    // save to local storage
+    localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
+    // and then load the saved places into the array
+    loadSearchResults();
 
-  // before displaying apply the sort
-  sortPlaces("rating"); // use rating by default until we get the html in
+    // before displaying apply the sort
+    sortPlaces("rating"); // use rating by default until we get the html in
 
-  // first clear the list items
-  $(".list-group").innerHTML = "";
-  // and any existing map markers
-  clearMapMarkers();
+    // first clear the list items
+    $(".list-group").innerHTML = "";
+    // and any existing map markers
+    clearMapMarkers();
 
-  // process each returned place
-  for (var i = 0; i < savedPlaces.length; i++) {
-    // add a marker to the map
-    createMarker(savedPlaces[i]);
-    // Display results on list
-    var li = $("<li>").attr("class", "list-group-item");
-    var button = $("<button>").attr("id", "button-" + i);
-    button.append(savedPlaces[i].name);
-    button.on("click", doClickButton);
-    li.append(button);
-    $(".list-group").append(li);
-  }
+    // process each returned place
+    for (var i = 0; i < savedPlaces.length; i++) {
+        // add a marker to the map
+        createMarker(savedPlaces[i]);
+        // Display results on list
+        var li = $("<li>").attr("class", "list-group-item");
+        var button = $("<button>").attr("id", "button-" + i);
+        button.append(savedPlaces[i].name);
+        button.on("click", doClickButton);
+        li.append(button);
+        $(".list-group").append(li);
+    }
 }
 
 // get results from local storage and load them into the array
 function loadSearchResults() {
-  // load the items from storage
-  var storedPlaces = localStorage.getItem(RESULTS_STORAGE_NAME);
-  if (storedPlaces) {
-    savedPlaces = JSON.parse(storedPlaces);
-  }
+    // load the items from storage
+    var storedPlaces = localStorage.getItem(RESULTS_STORAGE_NAME);
+    if (storedPlaces) {
+        savedPlaces = JSON.parse(storedPlaces);
+    }
 } // loadSearchResults
 
 // sort the savedPlaces array based on the input parameter
 function sortPlaces(sortType) {
-  if (sortType === "priceLoHi") {
-    // search by price low to high
-    savedPlaces.sort(function (a, b) {
-      return a.price_level - b.price_level;
-    });
-  } else if (sortType === "priceHiLo") {
-    // search by price high to low
-    savedPlaces.sort(function (a, b) {
-      return b.price_level - a.price_level;
-    });
-  } else if (sortType === "rating") {
-    // search by rating high to low
-    savedPlaces.sort(function (a, b) {
-      return b.rating - a.rating;
-    });
-  }
+    if (sortType === "priceLoHi") {
+        // search by price low to high
+        savedPlaces.sort(function (a, b) {
+            return a.price_level - b.price_level;
+        });
+    } else if (sortType === "priceHiLo") {
+        // search by price high to low
+        savedPlaces.sort(function (a, b) {
+            return b.price_level - a.price_level;
+        });
+    } else if (sortType === "rating") {
+        // search by rating high to low
+        savedPlaces.sort(function (a, b) {
+            return b.rating - a.rating;
+        });
+    }
 } // sortPlaces
 
 function getRestaurants() {
-  var request = {
-    location: window.map.center,
-    // radius: distance, //for textSearch
-    // query: "restaurant" //for textSearch
-    type: ["restaurant"], // for nearbySearch
-    rankBy: google.maps.places.RankBy.DISTANCE, // for nearbySearch
-  };
+    var request = {
+        location: window.map.center,
+        // radius: distance, //for textSearch
+        // query: "restaurant" //for textSearch
+        type: ["restaurant"], // for nearbySearch
+        rankBy: google.maps.places.RankBy.DISTANCE, // for nearbySearch
+    };
 
-  // service.textSearch(request, callback);
-  service.nearbySearch(request, callback);
+    // service.textSearch(request, callback);
+    service.nearbySearch(request, callback);
 
-  function callback(results, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      console.log(results);
-      processResults(results);
+    function callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            console.log(results);
+            processResults(results);
+        }
     }
-  }
 }
 // Renders 3D cubes displaying restaurants
 function render() {
-  caption = $("<div>").attr("class", "text");
-  caption.css("font-weight", "bold");
-  caption.css("background-color", "black");
-  caption.css("color", "white");
-  caption.css("font-size", "19px");
+    caption = $("<div>").attr("class", "text");
+    caption.css("font-weight", "bold");
+    caption.css("background-color", "black");
+    caption.css("color", "white");
+    caption.css("font-size", "19px");
 
-  slides = $("<button>");
-  slides.attr("class", "swiper-slide");
+    slides = $("<button>");
+    slides.attr("class", "swiper-slide");
 }
 
 // Trending this week , Cheap Eats & Date Night Galleries
