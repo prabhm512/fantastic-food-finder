@@ -384,7 +384,7 @@ function createGalleries() {
               " reviews</p>";
 
             // finish off the string
-            // contentString += "</div>" + "</div>";
+            contentString += "</div>" + "</div>";
             console.log(contentString);
             var image = {
               url: zomatoResponse[i].icon,
