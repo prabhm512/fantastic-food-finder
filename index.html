@@ -40,12 +40,16 @@
       <span class="navbar-brand mb-0"><h1>Fantastic Food Finder</h1></span>
     </nav>
   <div>
-    <form class="search">
-      <label for="distance">Distance</label><br>
-      <input type="text" id="distance" name="distance" placeholder="distance"><br>
+    <form class="search" name="input-form" >
+      <label for="distance">Distance:</label><br>
+      <input type="number" id="distance" name="distance" placeholder="distance"><br>
       <label for="search type">Search type:</label><br>
-      <input type="text" id="search-type" name="search type" placeholder="Search type"><br><br>
-      <input type="submit" value="Submit">
+      <select id="search-type" name="search-type" placeholder="Search type">
+        <option value="priceLoHi">Price - Low to High</option>
+        <option value="priceHiLo">Price - High to Low</option>
+        <option value="rating" selected>Rating</option>
+      </select><br><br>
+      <input type="submit" value="Submit" id="submit-btn" >
     </form>
   </div>
     <div class="container">

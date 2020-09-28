@@ -81,7 +81,7 @@ function moveToLocation(lat, lng) {
     window.map.panTo(center);
 
     // when the map is set up do the call
-    getRestaurants();
+    //getRestaurants();
     createGalleries(); // Zomato collections for user location
 }
 
@@ -129,8 +129,11 @@ function createMarker(place) {
         "</h5>" +
         '<div id="bodyContent">';
 
-    if (place.vicinity) {
-        contentString += "<p><b>Address:</b> " + place.vicinity + "</p>";
+    // place has vicinity in nearbySearch and formatted_address in textSearch
+    // if (place.vicinity) {
+    //     contentString += "<p><b>Address:</b> " + place.vicinity + "</p>";
+    if (place.formatted_address) {
+        contentString += "<p><b>Address:</b> " + place.formatted_address + "</p>";
     } else {
         contentString += "<p><b>No Address provided...</b> ";
     }
@@ -184,7 +187,7 @@ function doClickButton() {
         btnId.length == 8
             ? $(this).attr("id").slice(-1)
             : $(this).attr("id").slice(-2);
-    console.log(btnIndex);
+    // console.log(btnIndex);
     doClickMarker(mapMarkers[btnIndex]);
 }
 
@@ -196,7 +199,8 @@ function processResults(places) {
     loadSearchResults();
 
     // before displaying apply the sort
-    sortPlaces("rating"); // use rating by default until we get the html in
+    var searchBy = $("#search-type").val();
+    sortPlaces(searchBy); // use rating by default until we get the html in
 
     // first clear the list items
     $(".list-group").innerHTML = "";
@@ -247,16 +251,18 @@ function sortPlaces(sortType) {
 } // sortPlaces
 
 function getRestaurants() {
+    console.log($("#distance").val());
     var request = {
         location: window.map.center,
-        // radius: distance, //for textSearch
-        // query: "restaurant" //for textSearch
-        type: ["restaurant"], // for nearbySearch
-        rankBy: google.maps.places.RankBy.DISTANCE, // for nearbySearch
+        radius: $("#distance").val(), //for textSearch
+        query: "restaurant" //for textSearch
+        // the following properties are for the nearbySearch
+        // type: ["restaurant"], // for nearbySearch
+        // rankBy: google.maps.places.RankBy.DISTANCE, // for nearbySearch
     };
 
-    // service.textSearch(request, callback);
-    service.nearbySearch(request, callback);
+    service.textSearch(request, callback);
+    // service.nearbySearch(request, callback);
 
     function callback(results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -265,6 +271,12 @@ function getRestaurants() {
         }
     }
 }
+
+document.getElementById('submit-btn').addEventListener("click", function (event) {
+    event.preventDefault();
+    getRestaurants();
+});
+
 // Renders 3D cubes displaying restaurants
 function render() {
     caption = $("<div>").attr("class", "text");
@@ -397,6 +409,7 @@ function createGalleries() {
 
                         // Re-center map to location of clicked restaurant
                         window.map.panTo(myLatLng);
+                        doClickMarker(dropMarker);
                     }
                 });
             },
