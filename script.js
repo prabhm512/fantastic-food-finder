@@ -6,15 +6,50 @@ var service, lat, lng;
 var savedPlaces = [];
 
 var zomatoResponse = [
-  { collection_id: "1", images: [], name: [] },
-  { collection_id: "434", images: [], name: [] },
-  { collection_id: "46", images: [], name: [] },
+  {
+    collection_id: "1",
+    icon:
+      "https://images.vexels.com/media/users/3/143495/isolated/preview/6b80b9965b1ec4d47c31d7eccf8ce4b0-yellow-lightning-bolt-icon-by-vexels.png",
+    images: [],
+    name: [],
+    latitude: [],
+    longitude: [],
+    address: [],
+    rating: [],
+    reviewNo: [],
+  },
+  {
+    collection_id: "434",
+    icon:
+      "http://icons.iconarchive.com/icons/google/noto-emoji-objects/1024/62881-money-with-wings-icon.png",
+    images: [],
+    name: [],
+    latitude: [],
+    longitude: [],
+    address: [],
+    rating: [],
+    reviewNo: [],
+  },
+  {
+    collection_id: "46",
+    icon:
+      "http://icons.iconarchive.com/icons/succodesign/love-is-in-the-web/512/heart-icon.png",
+    images: [],
+    name: [],
+    latitude: [],
+    longitude: [],
+    address: [],
+    rating: [],
+    reviewNo: [],
+  },
 ];
 
 let slides, caption; // Updates gallery images & restaurant name
 
 var mapMarkers = [];
 var infoWindow;
+
+var counter = 0; // To uniquely identify gallery buttons
 
 // hard code location for initial testing
 // var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
@@ -114,8 +149,8 @@ function createMarker(place) {
     title: place.name,
     position: place.geometry.location,
     descrip: contentString,
+    animation: google.maps.Animation.DROP,
   });
-
   // hook up the click event for each marker
   google.maps.event.addListener(marker, "click", function () {
     doClickMarker(marker);
@@ -254,7 +289,7 @@ function createGalleries() {
       }, // This inserts the api key into the HTTP header
       success: function (response) {
         // Create Swiper
-        new Swiper(".swiper-container-" + i, {
+        var swiper = new Swiper(".swiper-container-" + i, {
           // Initially, swiper API rendered only when the page was resized.
           // observer & observeParents allow swiper to render on page load.
           observer: true,
@@ -269,6 +304,9 @@ function createGalleries() {
             shadowOffset: 20,
             shadowScale: 0.94,
           },
+          autoplay: {
+            delay: 5000,
+          },
           pagination: {
             el: ".swiper-pagination-" + i,
           },
@@ -280,6 +318,21 @@ function createGalleries() {
             response.restaurants[j].restaurant.featured_image
           );
           zomatoResponse[i].name.push(response.restaurants[j].restaurant.name);
+          zomatoResponse[i].latitude.push(
+            response.restaurants[j].restaurant.location.latitude
+          );
+          zomatoResponse[i].longitude.push(
+            response.restaurants[j].restaurant.location.longitude
+          );
+          zomatoResponse[i].address.push(
+            response.restaurants[j].restaurant.location.address
+          );
+          zomatoResponse[i].rating.push(
+            response.restaurants[j].restaurant.user_rating.aggregate_rating
+          );
+          zomatoResponse[i].reviewNo.push(
+            response.restaurants[j].restaurant.all_reviews_count
+          );
         }
 
         // Render response on Swiper
@@ -292,9 +345,75 @@ function createGalleries() {
             "style",
             "background-image: url(" + zomatoResponse[i].images[k] + ")"
           );
+
+          slides.attr("id", "button-idx-" + counter);
+          counter++;
+
           slides.append(caption);
           $(".swiper-container-" + i + " > .swiper-wrapper").append(slides);
         }
+
+        // Create marker on map at location of restaurant clicked
+
+        swiper.on("click", function () {
+          // Marker created on map for clicked restaurant
+          if (swiper.el.classList.contains("swiper-container-" + i)) {
+            var myLatLng = new google.maps.LatLng(
+              zomatoResponse[i].latitude[swiper.activeIndex],
+              zomatoResponse[i].longitude[swiper.activeIndex]
+            );
+            var title = zomatoResponse[i].name[swiper.activeIndex];
+            var contentString =
+              '<div id="content">' +
+              '<h5 id="firstHeading" class="firstHeading">' +
+              title +
+              "</h5>" +
+              '<div id="bodyContent">';
+
+            // Address appended to marker description
+            contentString +=
+              "<p><b>Address:</b> " +
+              zomatoResponse[i].address[swiper.activeIndex] +
+              "</p>";
+            // Rating and review no appended to marker description
+            contentString +=
+              "<p><b>Rating:</b> " +
+              zomatoResponse[i].rating[swiper.activeIndex] +
+              "/5 from " +
+              zomatoResponse[i].reviewNo[swiper.activeIndex] +
+              " reviews</p>";
+
+            // finish off the string
+            // contentString += "</div>" + "</div>";
+            console.log(contentString);
+            var image = {
+              url: zomatoResponse[i].icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(40, 40),
+            };
+          }
+          var marker = new google.maps.Marker({
+            map: map,
+            icon: image,
+            title: title,
+            position: myLatLng,
+            descrip: contentString,
+            animation: google.maps.Animation.BOUNCE,
+          });
+
+          // Re-center map to location of clicked restaurant
+          window.map.panTo(myLatLng);
+          // hook up the click event for each marker
+          // **** Ask Luke
+          // **** Also ask about clearing marker
+          google.maps.event.addListener(marker, "click", function () {
+            doClickMarker(marker);
+          });
+
+          mapMarkers.push(marker);
+        });
       },
     });
   }
