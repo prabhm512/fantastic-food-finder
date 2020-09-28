@@ -35,12 +35,11 @@
     ></script>
     <!-- moved initMap callback to script.js -->
   </head>
-  <body
-    background="https://img.freepik.com/free-vector/elegant-white-background-with-shiny-lines_1017-17580.jpg?size=626&ext=jpg"
-  >
+
+  <body background="https://img.freepik.com/free-vector/elegant-white-background-with-shiny-lines_1017-17580.jpg?size=626&ext=jpg">
     <div class="container-sm">
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-sm-12">
           <nav class="navbar navbar-dark bg-dark">
             <span class="navbar-brand mb-0"
               ><h1>Fantastic Food Finder</h1></span
@@ -49,21 +48,19 @@
         </div>
       </div>
     </div>
-    <div class="container-sm">
-      <div class="row">
-        <div class="col-sm-4">
-          <form class="search">
-            <label for="distance">Distance</label><br />
-            <input
-              type="text"
-              id="distance"
-              name="distance"
-              placeholder="Distance (in metres) ..."
-            /><br />
-          </form>
-        </div>
-      </div>
-    </div>
+  <div>
+    <form class="search" name="input-form" >
+      <label for="distance">Distance:</label><br>
+      <input type="number" id="distance" name="distance" placeholder="Distance (in metres)"><br>
+      <label for="search type">Search type:</label><br>
+      <select id="search-type" name="search-type" placeholder="Search type">
+        <option value="priceLoHi">Price - Low to High</option>
+        <option value="priceHiLo">Price - High to Low</option>
+        <option value="rating" selected>Rating</option>
+      </select><br><br>
+      <input type="submit" value="Submit" id="submit-btn" >
+    </form>
+  </div>
     <div class="container-sm">
       <div class="row">
         <div class="col-sm-4 nearby-list">
