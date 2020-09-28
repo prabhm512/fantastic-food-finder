@@ -2,95 +2,98 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
-    />
-    <title>Fantastic Food Finder</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
 
-    <!-- Swiper CSS -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/swiper/swiper-bundle.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-      crossorigin="anonymous"
-    />
-    <!-- Swiper JS -->
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt2X0ZpGPthNCfOYHNS2fNY57EZkUy5A&callback=initMap&libraries=places&v=weekly"
-      defer
-    ></script>
-    <!-- moved initMap callback to script.js -->
-  </head>
-  <body>
-    <nav class="navbar navbar-dark bg-dark">
-      <span class="navbar-brand mb-0 h1">Fantastic Food Finder</span>
-    </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+  <title>Fantastic Food Finder</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
 
-    <div class="container">
-      <div class="row">
-        <div class="col-3">
-          <ul class="list-group"></ul>
-        </div>
-        <div class="col-9">
-          <div id="map"></div>
-        </div>
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+  <!-- Swiper JS -->
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt2X0ZpGPthNCfOYHNS2fNY57EZkUy5A&callback=initMap&libraries=places&v=weekly"
+    defer></script>
+  <!-- moved initMap callback to script.js -->
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand mb-0 h1">Fantastic Food Finder</span>
+  </nav>
+  <div>
+    <form class="search">
+      <label for="distance">Distance</label><br>
+      <input type="text" id="distance" name="distance" placeholder="distance"><br>
+      <label for="search type">Search type:</label><br>
+      <input type="text" id="search-type" name="search type" placeholder="Search type"><br><br>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <ul class="list-group"></ul>
+      </div>
+      <div class="col-9">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Trending this week</h2>
+      </div>
+      <div class="col-md-4">
+        <h2>Cheap Eats</h2>
+      </div>
+      <div class="col-md-4">
+        <h2>Date Night</h2>
       </div>
     </div>
 
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Trending this week</h2>
-        </div>
-        <div class="col-md-4">
-          <h2>Cheap Eats</h2>
-        </div>
-        <div class="col-md-4">
-          <h2>Date Night</h2>
+    <br />
+
+
+    <!-- Swiper 1 -->
+    <div class="row">
+      <div class="col-md-4">
+        <div class="swiper-container-0">
+          <div class="swiper-wrapper"></div>
+          <!-- Add Pagination -->
+          <div class="swiper-pagination-0"></div>
         </div>
       </div>
-
-      <br />
-
-      <!-- Swiper 1 -->
-      <div class="row">
-        <div class="col-md-4">
-          <div class="swiper-container-0">
-            <div class="swiper-wrapper"></div>
-            <!-- Add Pagination -->
-            <div class="swiper-pagination-0"></div>
-          </div>
+      <!-- Swiper 2 -->
+      <div class="col-md-4">
+        <div class="swiper-container-1">
+          <div class="swiper-wrapper"></div>
+          <!-- Add Pagination -->
+          <div class="swiper-pagination-1"></div>
         </div>
-        <!-- Swiper 2 -->
-        <div class="col-md-4">
-          <div class="swiper-container-1">
-            <div class="swiper-wrapper"></div>
-            <!-- Add Pagination -->
-            <div class="swiper-pagination-1"></div>
-          </div>
-        </div>
-        <!-- Swiper 3 -->
-        <div class="col-md-4">
-          <div class="swiper-container-2">
-            <div class="swiper-wrapper"></div>
-            <!-- Add Pagination -->
-            <div class="swiper-pagination-2"></div>
-          </div>
+      </div>
+      <!-- Swiper 3 -->
+      <div class="col-md-4">
+        <div class="swiper-container-2">
+          <div class="swiper-wrapper"></div>
+          <!-- Add Pagination -->
+          <div class="swiper-pagination-2"></div>
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="script.js"></script>
-  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>

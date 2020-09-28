@@ -70,3 +70,12 @@ div[class*="swiper-pagination"] {
     font-size: 11px;
   }
 }
+
+  
+.search {
+  padding-left: 120px;
+}
+#distance, #search-type {
+  width: 90%;
+}
+
