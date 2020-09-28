@@ -83,8 +83,8 @@ function moveToLocation(lat, lng) {
   const center = new google.maps.LatLng(lat, lng);
   window.map.panTo(center);
 
-    // when the map is set up do the call
-    createGalleries(); // Zomato collections for user location
+  // when the map is set up do the call
+  createGalleries(); // Zomato collections for user location
 }
 
 function getLocation() {
@@ -114,62 +114,62 @@ function doClickMarker(marker) {
 
 // add a marker to the map for the given place
 function createMarker(place) {
-    // first create the image for the marker
-    var image = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25),
-    };
+  // first create the image for the marker
+  var image = {
+    url: place.icon,
+    size: new google.maps.Size(71, 71),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(17, 34),
+    scaledSize: new google.maps.Size(25, 25),
+  };
 
-    // construct an info string to add to the marker based on the place data
-    var contentString =
-        '<div id="content">' +
-        '<h5 id="firstHeading" class="firstHeading">' +
-        place.name +
-        "</h5>" +
-        '<div id="bodyContent">';
+  // construct an info string to add to the marker based on the place data
+  var contentString =
+    '<div id="content">' +
+    '<h5 id="firstHeading" class="firstHeading">' +
+    place.name +
+    "</h5>" +
+    '<div id="bodyContent">';
 
-    // place has vicinity in nearbySearch and formatted_address in textSearch
-    // if (place.vicinity) {
-    //     contentString += "<p><b>Address:</b> " + place.vicinity + "</p>";
-    if (place.formatted_address) {
-        contentString += "<p><b>Address:</b> " + place.formatted_address + "</p>";
-    } else {
-        contentString += "<p><b>No Address provided...</b> ";
-    }
+  // place has vicinity in nearbySearch and formatted_address in textSearch
+  // if (place.vicinity) {
+  //     contentString += "<p><b>Address:</b> " + place.vicinity + "</p>";
+  if (place.formatted_address) {
+    contentString += "<p><b>Address:</b> " + place.formatted_address + "</p>";
+  } else {
+    contentString += "<p><b>No Address provided...</b> ";
+  }
 
-    if (place.rating) {
-        contentString +=
-            "<p><b>Rating:</b> " +
-            place.rating +
-            "/5 from " +
-            place.user_ratings_total +
-            " reviews</p>";
-    } else {
-        contentString += "<p><b>No Ratings...</b> ";
-    }
+  if (place.rating) {
+    contentString +=
+      "<p><b>Rating:</b> " +
+      place.rating +
+      "/5 from " +
+      place.user_ratings_total +
+      " reviews</p>";
+  } else {
+    contentString += "<p><b>No Ratings...</b> ";
+  }
 
-    // finish off the string
-    contentString += "</div>" + "</div>";
+  // finish off the string
+  contentString += "</div>" + "</div>";
 
-    // then create the marker using the place data
-    var marker = new google.maps.Marker({
-        map: map,
-        icon: image,
-        title: place.name,
-        position: place.geometry.location,
-        descrip: contentString,
-        animation: google.maps.Animation.DROP,
-    });
-    // hook up the click event for each marker
-    google.maps.event.addListener(marker, "click", function () {
-        doClickMarker(marker);
-    });
+  // then create the marker using the place data
+  var marker = new google.maps.Marker({
+    map: map,
+    icon: image,
+    title: place.name,
+    position: place.geometry.location,
+    descrip: contentString,
+    animation: google.maps.Animation.DROP,
+  });
+  // hook up the click event for each marker
+  google.maps.event.addListener(marker, "click", function () {
+    doClickMarker(marker);
+  });
 
-    // keep track of markers
-    mapMarkers.push(marker);
+  // keep track of markers
+  mapMarkers.push(marker);
 }
 
 // clean up the map markers
@@ -183,45 +183,44 @@ function clearMapMarkers() {
 
 // fired on the click off each button in the places list
 function doClickButton() {
-    // buttons are given an id of "button-" + i so slice off the last char (or 2 if > 9) to get the number (index to array)
-    var btnId = $(this).attr("id");
-    var btnIndex =
-        btnId.length == 8
-            ? $(this).attr("id").slice(-1)
-            : $(this).attr("id").slice(-2);
-    // console.log(btnIndex);
-    doClickMarker(mapMarkers[btnIndex]);
+  // buttons are given an id of "button-" + i so slice off the last char (or 2 if > 9) to get the number (index to array)
+  var btnId = $(this).attr("id");
+  var btnIndex =
+    btnId.length == 8
+      ? $(this).attr("id").slice(-1)
+      : $(this).attr("id").slice(-2);
+  // console.log(btnIndex);
+  doClickMarker(mapMarkers[btnIndex]);
 }
 
 // deal with the returned array of places
 function processResults(places) {
+  // save to local storage
+  localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
+  // and then load the saved places into the array
+  loadSearchResults();
 
-    // save to local storage
-    localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
-    // and then load the saved places into the array
-    loadSearchResults();
+  // before displaying apply the sort
+  var searchBy = $("#search-type").val();
+  sortPlaces(searchBy); // use rating by default until we get the html in
 
-    // before displaying apply the sort
-    var searchBy = $("#search-type").val();
-    sortPlaces(searchBy); // use rating by default until we get the html in
+  // first clear the list items
+  $(".list-group").innerHTML = "";
+  // and any existing map markers
+  clearMapMarkers();
 
-    // first clear the list items
-    $(".list-group").innerHTML = "";
-    // and any existing map markers
-    clearMapMarkers();
-
-    // process each returned place
-    for (var i = 0; i < savedPlaces.length; i++) {
-        // add a marker to the map
-        createMarker(savedPlaces[i]);
-        // Display results on list
-        var li = $("<li>").attr("class", "list-group-item");
-        var button = $("<button>").attr("id", "button-" + i);
-        button.append(savedPlaces[i].name);
-        button.on("click", doClickButton);
-        li.append(button);
-        $(".list-group").append(li);
-    }
+  // process each returned place
+  for (var i = 0; i < savedPlaces.length; i++) {
+    // add a marker to the map
+    createMarker(savedPlaces[i]);
+    // Display results on list
+    var li = $("<li>").attr("class", "list-group-item");
+    var button = $("<button>").attr("id", "button-" + i);
+    button.append(savedPlaces[i].name);
+    button.on("click", doClickButton);
+    li.append(button);
+    $(".list-group").append(li);
+  }
 }
 
 // get results from local storage and load them into the array
@@ -254,32 +253,33 @@ function sortPlaces(sortType) {
 } // sortPlaces
 
 function getRestaurants() {
-    console.log($("#distance").val());
-    var request = {
-        location: window.map.center,
-        radius: $("#distance").val(), //for textSearch
-        query: "restaurant" //for textSearch
-        // the following properties are for the nearbySearch
-        // type: ["restaurant"], // for nearbySearch
-        // rankBy: google.maps.places.RankBy.DISTANCE, // for nearbySearch
-    };
+  console.log($("#distance").val());
+  var request = {
+    location: window.map.center,
+    radius: $("#distance").val(), //for textSearch
+    query: "restaurant", //for textSearch
+    // the following properties are for the nearbySearch
+    // type: ["restaurant"], // for nearbySearch
+    // rankBy: google.maps.places.RankBy.DISTANCE, // for nearbySearch
+  };
 
-    service.textSearch(request, callback);
-    // service.nearbySearch(request, callback);
+  service.textSearch(request, callback);
+  // service.nearbySearch(request, callback);
 
-    function callback(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-            console.log(results);
-            processResults(results);
-        }
+  function callback(results, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      console.log(results);
+      processResults(results);
     }
   }
 }
 
-document.getElementById('submit-btn').addEventListener("click", function (event) {
+document
+  .getElementById("submit-btn")
+  .addEventListener("click", function (event) {
     event.preventDefault();
     getRestaurants();
-});
+  });
 
 // Renders 3D cubes displaying restaurants
 function render() {
@@ -296,128 +296,134 @@ function render() {
 // Trending this week , Cheap Eats & Date Night Galleries
 
 function createGalleries() {
+  for (let i = 0; i < zomatoResponse.length; i++) {
+    $.ajax({
+      url:
+        "https://developers.zomato.com/api/v2.1/search?collection_id=" +
+        zomatoResponse[i].collection_id +
+        "&lat=" +
+        lat +
+        "&lon=" +
+        lng,
+      dataType: "json",
+      async: true,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
+      }, // This inserts the api key into the HTTP header
+      success: function (response) {
+        // Create Swiper
+        var swiper = new Swiper(".swiper-container-" + i, {
+          // Initially, swiper API rendered only when the page was resized.
+          // observer & observeParents allow swiper to render on page load.
+          observer: true,
+          observeParents: true,
 
-    for (let i = 0; i < zomatoResponse.length; i++) {
-        $.ajax({
-            url:
-                "https://developers.zomato.com/api/v2.1/search?collection_id=" +
-                zomatoResponse[i].collection_id +
-                "&lat=" +
-                lat +
-                "&lon=" +
-                lng,
-            dataType: "json",
-            async: true,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
-            }, // This inserts the api key into the HTTP header
-            success: function (response) {
-                // Create Swiper
-                var swiper = new Swiper(".swiper-container-" + i, {
-                    // Initially, swiper API rendered only when the page was resized.
-                    // observer & observeParents allow swiper to render on page load.
-                    observer: true,
-                    observeParents: true,
+          // Basic swiper paraemeters
+          effect: "cube",
+          grabCursor: true,
+          cubeEffect: {
+            shadow: true,
+            slideShadows: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+          },
+          autoplay: {
+            delay: 5000,
+          },
+          pagination: {
+            el: ".swiper-pagination-" + i,
+          },
+        });
 
-                    // Basic swiper paraemeters
-                    effect: "cube",
-                    grabCursor: true,
-                    cubeEffect: {
-                        shadow: true,
-                        slideShadows: true,
-                        shadowOffset: 20,
-                        shadowScale: 0.94,
-                    },
-                    autoplay: {
-                        delay: 5000,
-                    },
-                    pagination: {
-                        el: ".swiper-pagination-" + i,
-                    },
-                });
+        // Push response to array
+        for (let j = 0; j < 10; j++) {
+          zomatoResponse[i].images.push(
+            response.restaurants[j].restaurant.featured_image
+          );
+          zomatoResponse[i].name.push(response.restaurants[j].restaurant.name);
+          zomatoResponse[i].latitude.push(
+            response.restaurants[j].restaurant.location.latitude
+          );
+          zomatoResponse[i].longitude.push(
+            response.restaurants[j].restaurant.location.longitude
+          );
+          zomatoResponse[i].address.push(
+            response.restaurants[j].restaurant.location.address
+          );
+          zomatoResponse[i].rating.push(
+            response.restaurants[j].restaurant.user_rating.aggregate_rating
+          );
+          zomatoResponse[i].reviewNo.push(
+            response.restaurants[j].restaurant.all_reviews_count
+          );
+        }
 
-                // Push response to array
-                for (let j = 0; j < 10; j++) {
-                    zomatoResponse[i].images.push(
-                        response.restaurants[j].restaurant.featured_image
-                    );
-                    zomatoResponse[i].name.push(response.restaurants[j].restaurant.name);
-                    zomatoResponse[i].latitude.push(
-                        response.restaurants[j].restaurant.location.latitude
-                    );
-                    zomatoResponse[i].longitude.push(
-                        response.restaurants[j].restaurant.location.longitude
-                    );
-                    zomatoResponse[i].address.push(
-                        response.restaurants[j].restaurant.location.address
-                    );
-                    zomatoResponse[i].rating.push(
-                        response.restaurants[j].restaurant.user_rating.aggregate_rating
-                    );
-                    zomatoResponse[i].reviewNo.push(
-                        response.restaurants[j].restaurant.all_reviews_count
-                    );
-                }
+        // Render response on Swiper
+        for (let k = 0; k < 10; k++) {
+          render();
 
-                // Render response on Swiper
-                for (let k = 0; k < 10; k++) {
-                    render();
+          caption.append(zomatoResponse[i].name[k]); // Restaurant name retreived from zomato database
 
-                    caption.append(zomatoResponse[i].name[k]); // Restaurant name retreived from zomato database
+          slides.attr(
+            "style",
+            "background-image: url(" + zomatoResponse[i].images[k] + ")"
+          );
 
-                    slides.attr(
-                        "style",
-                        "background-image: url(" + zomatoResponse[i].images[k] + ")"
-                    );
+          slides.attr("id", "button-idx-" + counter);
+          counter++;
 
-                    slides.attr("id", "button-idx-" + counter);
-                    counter++;
+          slides.append(caption);
+          $(".swiper-container-" + i + " > .swiper-wrapper").append(slides);
+        }
 
-                    slides.append(caption);
-                    $(".swiper-container-" + i + " > .swiper-wrapper").append(slides);
-                }
+        // update the drop marker and move it to map location of restaurant clicked
+        swiper.on("click", function () {
+          if (swiper.el.classList.contains("swiper-container-" + i)) {
+            var myLatLng = new google.maps.LatLng(
+              zomatoResponse[i].latitude[swiper.activeIndex],
+              zomatoResponse[i].longitude[swiper.activeIndex]
+            );
 
-                // update the drop marker and move it to map location of restaurant clicked
-                swiper.on("click", function () {
+            // get content to display on the click off the marker
+            var title = zomatoResponse[i].name[swiper.activeIndex];
+            var contentString =
+              '<div id="content">' +
+              '<h5 id="firstHeading" class="firstHeading">' +
+              title +
+              "</h5>" +
+              '<div id="bodyContent">' +
+              "<p><b>Address:</b> " +
+              zomatoResponse[i].address[swiper.activeIndex] +
+              "</p>" +
+              "<p><b>Rating:</b> " +
+              zomatoResponse[i].rating[swiper.activeIndex] +
+              "/5 from " +
+              zomatoResponse[i].reviewNo[swiper.activeIndex] +
+              " reviews</p>" +
+              "</div>" +
+              "</div>";
 
-                    if (swiper.el.classList.contains("swiper-container-" + i)) {
-                        var myLatLng = new google.maps.LatLng(
-                            zomatoResponse[i].latitude[swiper.activeIndex],
-                            zomatoResponse[i].longitude[swiper.activeIndex]
-                        );
+            // set up the image for the marker's icon
+            var image = {
+              url: zomatoResponse[i].icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(40, 40),
+            };
 
-                        // get content to display on the click off the marker
-                        var title = zomatoResponse[i].name[swiper.activeIndex];
-                        var contentString =
-                            '<div id="content">' +
-                            '<h5 id="firstHeading" class="firstHeading">' + title + "</h5>" +
-                            '<div id="bodyContent">' +
-                            "<p><b>Address:</b> " + zomatoResponse[i].address[swiper.activeIndex] + "</p>" +
-                            "<p><b>Rating:</b> " + zomatoResponse[i].rating[swiper.activeIndex] + "/5 from " +
-                            zomatoResponse[i].reviewNo[swiper.activeIndex] + " reviews</p>" +
-                            "</div>" + "</div>";
+            // update the drop marker
+            dropMarker.descrip = contentString;
+            dropMarker.setPosition(myLatLng);
+            dropMarker.setIcon(image);
+            dropMarker.setTitle(title);
 
-                        // set up the image for the marker's icon
-                        var image = {
-                            url: zomatoResponse[i].icon,
-                            size: new google.maps.Size(71, 71),
-                            origin: new google.maps.Point(0, 0),
-                            anchor: new google.maps.Point(17, 34),
-                            scaledSize: new google.maps.Size(40, 40),
-                        };
-
-                        // update the drop marker
-                        dropMarker.descrip = contentString;
-                        dropMarker.setPosition(myLatLng);
-                        dropMarker.setIcon(image);
-                        dropMarker.setTitle(title);
-
-                        // Re-center map to location of clicked restaurant
-                        window.map.panTo(myLatLng);
-                        doClickMarker(dropMarker);
-                    }
-                });
-            },
+            // Re-center map to location of clicked restaurant
+            window.map.panTo(myLatLng);
+            doClickMarker(dropMarker);
+          }
+        });
+      },
     });
   }
 }
