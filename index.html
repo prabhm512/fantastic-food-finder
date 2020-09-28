@@ -4,15 +4,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
+    />
     <title>Fantastic Food Finder</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
     />
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt2X0ZpGPthNCfOYHNS2fNY57EZkUy5A&callback=initMap&libraries=places&v=weekly"
@@ -36,43 +47,47 @@
       </div>
     </div>
 
-    <!-- Gallery -->
-    <div class="slideshow-container">
-      <div class="mySlides">
-        <div class="numbertext">1 / 3</div>
-        <img
-          src="https://th.bing.com/th/id/OIP.nbuDAn8re-hdJbU35tWvJQHaEK?w=316&h=180&c=7&o=5&pid=1.7"
-          style="width: 100%"
-        />
-        <div class="text">Caption Text</div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Trending this week</h2>
+        </div>
+        <div class="col-md-4">
+          <h2>Cheap Eats</h2>
+        </div>
+        <div class="col-md-4">
+          <h2>Date Night</h2>
+        </div>
       </div>
 
-      <div class="mySlides">
-        <div class="numbertext">2 / 3</div>
-        <img
-          src="https://th.bing.com/th/id/OIP.m9TNW4Cvs9GDpf7wPzJtYwHaEK?w=316&h=180&c=7&o=5&pid=1.7"
-          style="width: 100%"
-        />
-        <div class="text">Caption Two</div>
-      </div>
+      <br />
 
-      <div class="mySlides">
-        <div class="numbertext">3 / 3</div>
-        <img
-          src="https://th.bing.com/th/id/OIP.TUDe74-_OR6O3P4V-3_FYQHaE7?w=267&h=180&c=7&o=5&pid=1.7"
-          style="width: 100%"
-        />
-        <div class="text">Caption Three</div>
+      <!-- Swiper 1 -->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="swiper-container-0">
+            <div class="swiper-wrapper"></div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination-0"></div>
+          </div>
+        </div>
+        <!-- Swiper 2 -->
+        <div class="col-md-4">
+          <div class="swiper-container-1">
+            <div class="swiper-wrapper"></div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination-1"></div>
+          </div>
+        </div>
+        <!-- Swiper 3 -->
+        <div class="col-md-4">
+          <div class="swiper-container-2">
+            <div class="swiper-wrapper"></div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination-2"></div>
+          </div>
+        </div>
       </div>
-      <a class="prev">&#10094;</a>
-      <a class="next">&#10095;</a>
-    </div>
-    <br />
-
-    <div style="text-align: center">
-      <span class="dot" onclick="currentSlide(1)"></span>
-      <span class="dot" onclick="currentSlide(2)"></span>
-      <span class="dot" onclick="currentSlide(3)"></span>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
