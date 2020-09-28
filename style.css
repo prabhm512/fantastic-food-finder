@@ -8,12 +8,13 @@ body {
   height: 100%;
 }
 
-body {
+
+/* body { */
   /* background-color: orange; */
   /* font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   color: #000; */
   /* margin: 0; */
-  padding: 0;
+  /* padding: 0; */
 }
 /**
 * /* Always set the map height explicitly to define the size of the div
@@ -26,27 +27,23 @@ h2 {
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
   /* margin-top: 20px; */
-  color: orange;
+  /* color: orange; */
   /* font-weight: bold; */
   /* background-color: rosybrown; */
 }
 
-.h2 {
+.top10 {
   margin-top: 20px;
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 h3 {
   font-style: italic;
+  text-align: center;
 }
 #map {
-  height: 100%;
-}
-
-.container {
-  /* height: 100%; */
-  /* width: 100%; */
-  margin-top: 20px;
+  height: 47vh;
+  border: 5px solid black;
 }
 
 .list-group {
@@ -56,6 +53,10 @@ h3 {
   height: 300px;
 }
 
+.nearby-list {
+  margin-bottom: 15px;
+}
+
 .list-group li button {
   background: none;
   border: none;
@@ -63,10 +64,11 @@ h3 {
 /* Swiper */
 
 div[class*="swiper-container"] {
-  width: 200px;
-  height: 200px;
-  position: absolute;
-  margin-bottom: 100px;
+  width: 250px;
+  height: 250px;
+  position: relative;
+  /* margin-bottom: 37px; */
+  margin: auto auto 37px auto;
 }
 
 .swiper-slide {
@@ -74,10 +76,21 @@ div[class*="swiper-container"] {
   background-size: cover;
 }
 
-.search {
-  padding-left: 120px;
+div[class*=swiper-pagination] {
+  margin-left: 42px;
 }
-#distance, #search-type {
+
+#distance {
+  margin-bottom: 10px;
   width: 90%;
 }
 
+h1 {
+  font-size: 40px
+}
+
+@media screen and (max-width: 450px) {
+  h1 {
+    font-size: 30px;
+  }
+}
