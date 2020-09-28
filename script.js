@@ -278,6 +278,7 @@ document
   .getElementById("submit-btn")
   .addEventListener("click", function (event) {
     event.preventDefault();
+    $(".list-group").text("");
     getRestaurants();
   });
 
