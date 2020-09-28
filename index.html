@@ -35,14 +35,23 @@
     ></script>
     <!-- moved initMap callback to script.js -->
   </head>
-  <body background-color="orange">
-    <nav class="navbar navbar-dark bg-dark">
-      <span class="navbar-brand mb-0"><h1>Fantastic Food Finder</h1></span>
-    </nav>
+
+  <body background="https://img.freepik.com/free-vector/elegant-white-background-with-shiny-lines_1017-17580.jpg?size=626&ext=jpg">
+    <div class="container-sm">
+      <div class="row">
+        <div class="col-sm-12">
+          <nav class="navbar navbar-dark bg-dark">
+            <span class="navbar-brand mb-0"
+              ><h1>Fantastic Food Finder</h1></span
+            >
+          </nav>
+        </div>
+      </div>
+    </div>
   <div>
     <form class="search" name="input-form" >
       <label for="distance">Distance:</label><br>
-      <input type="number" id="distance" name="distance" placeholder="distance"><br>
+      <input type="number" id="distance" name="distance" placeholder="Distance (in metres)"><br>
       <label for="search type">Search type:</label><br>
       <select id="search-type" name="search-type" placeholder="Search type">
         <option value="priceLoHi">Price - Low to High</option>
@@ -52,69 +61,65 @@
       <input type="submit" value="Submit" id="submit-btn" >
     </form>
   </div>
-    <div class="container">
+    <div class="container-sm">
       <div class="row">
-        <div class="col-4 nearby-list">
-          <h2>
+        <div class="col-sm-4 nearby-list">
+          <h2 style="color: orange">
             <u><strong>Nearby</strong></u>
           </h2>
           <ul class="list-group"></ul>
         </div>
-        <div class="col-8">
+        <div class="col-lg-8">
           <div id="map"></div>
         </div>
       </div>
     </div>
-    <h2 class="h2">
-      <u><strong>Top 10's in your City</strong></u>
-    </h2>
-    <div class="container">
+    <div class="container-sm">
       <div class="row">
-        <div class="col-md-4">
-          <h3 style="color: yellowgreen">Trending this Week ⚡</h3>
-        </div>
-        <div class="col-md-4">
-          <h3 style="color: green">Cheap Eats 💸</h3>
-        </div>
-        <div class="col-md-4">
-          <h3 style="color: red">Date Night 💘</h3>
+        <div class="col-lg-12">
+          <h2 class="top10" style="color: orange">
+            <u><strong>Top 10's in your City</strong></u>
+          </h2>
         </div>
       </div>
     </div>
 
     <br />
 
-
     <!-- Swiper 1 -->
-    <div class="row">
-      <div class="col-md-4">
-        <div class="swiper-container-0">
-          <div class="swiper-wrapper"></div>
-          <!-- Add Pagination -->
-          <div class="swiper-pagination-0"></div>
+    <div class="container-sm">
+      <div class="row">
+        <div class="col-sm-4">
+          <h3 style="color: yellowgreen">Trending ⚡</h3>
+          <div class="swiper-container-0">
+            <div class="swiper-wrapper"></div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination-0"></div>
+          </div>
         </div>
-      </div>
-      <!-- Swiper 2 -->
-      <div class="col-md-4">
-        <div class="swiper-container-1">
-          <div class="swiper-wrapper"></div>
-          <!-- Add Pagination -->
-          <div class="swiper-pagination-1"></div>
+        <!-- Swiper 2 -->
+
+        <div class="col-sm-4">
+          <h3 style="color: green">Cheap Eats 💸</h3>
+          <div class="swiper-container-1">
+            <div class="swiper-wrapper"></div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination-1"></div>
+          </div>
         </div>
-      </div>
-      <!-- Swiper 3 -->
-      <div class="col-md-4">
-        <div class="swiper-container-2">
-          <div class="swiper-wrapper"></div>
-          <!-- Add Pagination -->
-          <div class="swiper-pagination-2"></div>
+        <!-- Swiper 3 -->
+        <div class="col-sm-4">
+          <h3 style="color: red">Date Night 💘</h3>
+          <div class="swiper-container-2">
+            <div class="swiper-wrapper"></div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination-2"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="script.js"></script>
-</body>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
