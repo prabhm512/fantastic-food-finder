@@ -44,13 +44,9 @@ var zomatoResponse = [
   },
 ];
 
-let slides, caption; // Updates gallery images & restaurant name
-
 var mapMarkers = [];
 var infoWindow;
 var dropMarker;
-
-var counter = 0; // To uniquely identify gallery buttons
 
 // hard code location for initial testing
 // var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
@@ -282,18 +278,6 @@ document
     getRestaurants();
   });
 
-// Renders 3D cubes displaying restaurants
-function render() {
-  caption = $("<div>").attr("class", "text");
-  caption.css("font-weight", "bold");
-  caption.css("background-color", "black");
-  caption.css("color", "white");
-  caption.css("font-size", "19px");
-
-  slides = $("<button>");
-  slides.attr("class", "swiper-slide");
-}
-
 // Trending this week , Cheap Eats & Date Night Galleries
 
 function createGalleries() {
@@ -361,7 +345,17 @@ function createGalleries() {
 
         // Render response on Swiper
         for (let k = 0; k < 10; k++) {
-          render();
+          let slides, caption; // Updates gallery images & restaurant name
+          let counter = 0; // To uniquely identify gallery buttons
+
+          caption = $("<div>").attr("class", "text");
+          caption.css("font-weight", "bold");
+          caption.css("background-color", "black");
+          caption.css("color", "white");
+          caption.css("font-size", "19px");
+
+          slides = $("<button>");
+          slides.attr("class", "swiper-slide");
 
           caption.append(zomatoResponse[i].name[k]); // Restaurant name retreived from zomato database
 
