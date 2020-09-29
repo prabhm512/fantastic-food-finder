@@ -6,42 +6,42 @@ var service, lat, lng;
 var savedPlaces = [];
 
 var zomatoResponse = [
-  {
-    collection_id: "1",
-    icon:
-      "https://images.vexels.com/media/users/3/143495/isolated/preview/6b80b9965b1ec4d47c31d7eccf8ce4b0-yellow-lightning-bolt-icon-by-vexels.png",
-    images: [],
-    name: [],
-    latitude: [],
-    longitude: [],
-    address: [],
-    rating: [],
-    reviewNo: [],
-  },
-  {
-    collection_id: "434",
-    icon:
-      "http://icons.iconarchive.com/icons/google/noto-emoji-objects/1024/62881-money-with-wings-icon.png",
-    images: [],
-    name: [],
-    latitude: [],
-    longitude: [],
-    address: [],
-    rating: [],
-    reviewNo: [],
-  },
-  {
-    collection_id: "46",
-    icon:
-      "http://icons.iconarchive.com/icons/succodesign/love-is-in-the-web/512/heart-icon.png",
-    images: [],
-    name: [],
-    latitude: [],
-    longitude: [],
-    address: [],
-    rating: [],
-    reviewNo: [],
-  },
+    {
+        collection_id: "1",
+        icon:
+            "https://images.vexels.com/media/users/3/143495/isolated/preview/6b80b9965b1ec4d47c31d7eccf8ce4b0-yellow-lightning-bolt-icon-by-vexels.png",
+        images: [],
+        name: [],
+        latitude: [],
+        longitude: [],
+        address: [],
+        rating: [],
+        reviewNo: [],
+    },
+    {
+        collection_id: "434",
+        icon:
+            "http://icons.iconarchive.com/icons/google/noto-emoji-objects/1024/62881-money-with-wings-icon.png",
+        images: [],
+        name: [],
+        latitude: [],
+        longitude: [],
+        address: [],
+        rating: [],
+        reviewNo: [],
+    },
+    {
+        collection_id: "46",
+        icon:
+            "http://icons.iconarchive.com/icons/succodesign/love-is-in-the-web/512/heart-icon.png",
+        images: [],
+        name: [],
+        latitude: [],
+        longitude: [],
+        address: [],
+        rating: [],
+        reviewNo: [],
+    },
 ];
 
 let slides, caption; // Updates gallery images & restaurant name
@@ -49,6 +49,7 @@ let slides, caption; // Updates gallery images & restaurant name
 var mapMarkers = [];
 var infoWindow;
 var dropMarker;
+var bounds;
 
 var counter = 0; // To uniquely identify gallery buttons
 
@@ -59,57 +60,58 @@ var counter = 0; // To uniquely identify gallery buttons
 // The map and service vars have to be set here as the method isn't run until the api returns.
 // Any use of the map and service must be done after this method fires.
 function initMap() {
-  const mapOptions = {
-    center: new google.maps.LatLng(0, 0),
-    zoom: 12,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-  };
+    const mapOptions = {
+        center: new google.maps.LatLng(0, 0),
+        zoom: 10,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+    };
 
-  window.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-  infoWindow = new google.maps.InfoWindow();
-  service = new google.maps.places.PlacesService(map);
-  dropMarker = new google.maps.Marker({
-    map: map,
-    descrip: "",
-    animation: google.maps.Animation.BOUNCE,
-  });
-  // hook up the click event for the drop marker
-  google.maps.event.addListener(dropMarker, "click", function () {
-    doClickMarker(dropMarker);
-  });
+    window.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    infoWindow = new google.maps.InfoWindow();
+    service = new google.maps.places.PlacesService(map);
+    dropMarker = new google.maps.Marker({
+        map: map,
+        descrip: "",
+        animation: google.maps.Animation.BOUNCE,
+    });
+    bounds = new google.maps.LatLngBounds();
+    // hook up the click event for the drop marker
+    google.maps.event.addListener(dropMarker, "click", function () {
+        doClickMarker(dropMarker);
+    });
 }
 
 function moveToLocation(lat, lng) {
-  const center = new google.maps.LatLng(lat, lng);
-  window.map.panTo(center);
+    const center = new google.maps.LatLng(lat, lng);
+    window.map.panTo(center);
 
     // when the map is set up do the call
     createGalleries(); // Zomato collections for user location
 }
 
 function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
 }
 
 function showPosition(position) {
-  lat = position.coords.latitude;
-  lng = position.coords.longitude;
-  moveToLocation(lat, lng);
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+    moveToLocation(lat, lng);
 }
 
 getLocation();
 
 // show the info window for the given marker
 function doClickMarker(marker) {
-  infoWindow.setOptions({
-    content: marker.descrip,
-  });
+    infoWindow.setOptions({
+        content: marker.descrip,
+    });
 
-  infoWindow.open(map, marker);
+    infoWindow.open(map, marker);
 }
 
 // add a marker to the map for the given place
@@ -170,15 +172,17 @@ function createMarker(place) {
 
     // keep track of markers
     mapMarkers.push(marker);
+
+    bounds.extend(marker.position);
 }
 
 // clean up the map markers
 function clearMapMarkers() {
-  for (let i = 0; i < mapMarkers.length; i++) {
-    mapMarkers[i].setMap(null);
-  }
+    for (let i = 0; i < mapMarkers.length; i++) {
+        mapMarkers[i].setMap(null);
+    }
 
-  mapMarkers = [];
+    mapMarkers = [];
 }
 
 // fired on the click off each button in the places list
@@ -202,11 +206,10 @@ function processResults(places) {
     loadSearchResults();
 
     // before displaying apply the sort
-    var searchBy = $("#search-type").val();
-    sortPlaces(searchBy); // use rating by default until we get the html in
+    sortPlaces("rating"); // use rating by default. Can only search by price if using nearbySearch
 
     // first clear the list items
-    $(".list-group").innerHTML = "";
+    $(".list-group").empty();
     // and any existing map markers
     clearMapMarkers();
 
@@ -222,39 +225,41 @@ function processResults(places) {
         li.append(button);
         $(".list-group").append(li);
     }
+
+    map.fitBounds(bounds);
 }
 
 // get results from local storage and load them into the array
 function loadSearchResults() {
-  // load the items from storage
-  var storedPlaces = localStorage.getItem(RESULTS_STORAGE_NAME);
-  if (storedPlaces) {
-    savedPlaces = JSON.parse(storedPlaces);
-  }
+    // load the items from storage
+    var storedPlaces = localStorage.getItem(RESULTS_STORAGE_NAME);
+    if (storedPlaces) {
+        savedPlaces = JSON.parse(storedPlaces);
+    }
 } // loadSearchResults
 
 // sort the savedPlaces array based on the input parameter
 function sortPlaces(sortType) {
-  if (sortType === "priceLoHi") {
-    // search by price low to high
-    savedPlaces.sort(function (a, b) {
-      return a.price_level - b.price_level;
-    });
-  } else if (sortType === "priceHiLo") {
-    // search by price high to low
-    savedPlaces.sort(function (a, b) {
-      return b.price_level - a.price_level;
-    });
-  } else if (sortType === "rating") {
-    // search by rating high to low
-    savedPlaces.sort(function (a, b) {
-      return b.rating - a.rating;
-    });
-  }
+    if (sortType === "priceLoHi") {
+        // search by price low to high
+        savedPlaces.sort(function (a, b) {
+            return a.price_level - b.price_level;
+        });
+    } else if (sortType === "priceHiLo") {
+        // search by price high to low
+        savedPlaces.sort(function (a, b) {
+            return b.price_level - a.price_level;
+        });
+    } else if (sortType === "rating") {
+        // search by rating high to low
+        savedPlaces.sort(function (a, b) {
+            return b.rating - a.rating;
+        });
+    }
 } // sortPlaces
 
 function getRestaurants() {
-    console.log($("#distance").val());
+
     var request = {
         location: window.map.center,
         radius: $("#distance").val(), //for textSearch
@@ -272,8 +277,18 @@ function getRestaurants() {
             console.log(results);
             processResults(results);
         }
+        else {
+            console.log("return status is NOT OK");
+            // first clear the list items
+            $(".list-group").empty();
+            // add a list item that shows the user the result
+            var li = $("<li>").attr("class", "list-group-item");
+            $(li).text("No results found")
+            $(".list-group").append(li);
+            // and any existing map markers
+            clearMapMarkers();
+        }
     }
-  }
 }
 
 document.getElementById('submit-btn').addEventListener("click", function (event) {
@@ -283,14 +298,14 @@ document.getElementById('submit-btn').addEventListener("click", function (event)
 
 // Renders 3D cubes displaying restaurants
 function render() {
-  caption = $("<div>").attr("class", "text");
-  caption.css("font-weight", "bold");
-  caption.css("background-color", "black");
-  caption.css("color", "white");
-  caption.css("font-size", "19px");
+    caption = $("<div>").attr("class", "text");
+    caption.css("font-weight", "bold");
+    caption.css("background-color", "black");
+    caption.css("color", "white");
+    caption.css("font-size", "19px");
 
-  slides = $("<button>");
-  slides.attr("class", "swiper-slide");
+    slides = $("<button>");
+    slides.attr("class", "swiper-slide");
 }
 
 // Trending this week , Cheap Eats & Date Night Galleries
@@ -418,6 +433,6 @@ function createGalleries() {
                     }
                 });
             },
-    });
-  }
+        });
+    }
 }
