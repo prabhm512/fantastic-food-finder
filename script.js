@@ -140,7 +140,12 @@ function createMarker(place) {
   }
 
   if (place.rating) {
-    contentString += "<b>Rating:</b> " + place.rating + "/5 from " + place.user_ratings_total + " reviews<br>";
+    contentString +=
+      "<b>Rating:</b> " +
+      place.rating +
+      "/5 from " +
+      place.user_ratings_total +
+      " reviews<br>";
   } else {
     contentString += "<b>No Ratings...</b><br>";
   }
@@ -172,7 +177,6 @@ function createMarker(place) {
   mapMarkers.push(marker);
 
   bounds.extend(marker.position);
-
 }
 
 // clean up the map markers
@@ -198,7 +202,6 @@ function doClickButton() {
 
 // deal with the returned array of places
 function processResults(places) {
-
   // save to local storage
   localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
   // and then load the saved places into the array
@@ -243,11 +246,12 @@ function sortPlaces(sortType) {
     // search by price low to high
     savedPlaces.sort(function (a, b) {
       if (a.price_level) {
-        return (b.price_level == null) ? a.price_level : a.price_level - b.price_level;
-      }
-      else {
+        return b.price_level == null
+          ? a.price_level
+          : a.price_level - b.price_level;
+      } else {
         // a is not defined so check b
-        return (b.price_level == null) ? 0 : b.price_level;
+        return b.price_level == null ? 0 : b.price_level;
       }
       // return a.price_level - b.price_level;
     });
@@ -255,11 +259,12 @@ function sortPlaces(sortType) {
     // search by price high to low
     savedPlaces.sort(function (a, b) {
       if (b.price_level) {
-        return (a.price_level == null) ? b.price_level : b.price_level - a.price_level;
-      }
-      else {
+        return a.price_level == null
+          ? b.price_level
+          : b.price_level - a.price_level;
+      } else {
         // b is not defined so check a
-        return (a.price_level == null) ? 0 : a.price_level;
+        return a.price_level == null ? 0 : a.price_level;
       }
       // return b.price_level - a.price_level;
     });
@@ -267,11 +272,10 @@ function sortPlaces(sortType) {
     // search by rating high to low
     savedPlaces.sort(function (a, b) {
       if (b.rating) {
-        return (a.rating == null) ? b.rating : b.rating - a.rating;
-      }
-      else {
+        return a.rating == null ? b.rating : b.rating - a.rating;
+      } else {
         // b.rating is not defined so check a
-        return (a.rating == null) ? 0 : a.rating;
+        return a.rating == null ? 0 : a.rating;
       }
       // return b.rating - a.rating;
     });
@@ -280,7 +284,6 @@ function sortPlaces(sortType) {
 } // sortPlaces
 
 function getRestaurants() {
-
   var request = {
     location: window.map.center,
     // radius: $("#distance").val(), //for textSearch
@@ -297,14 +300,13 @@ function getRestaurants() {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       console.log(results);
       processResults(results);
-    }
-    else {
+    } else {
       console.log("return status is NOT OK");
       // first clear the list items
       $(".list-group").empty();
       // add a list item that shows the user the result
       var li = $("<li>").attr("class", "list-group-item");
-      $(li).text("No results found")
+      $(li).text("No results found");
       $(".list-group").append(li);
       // and any existing map markers
       clearMapMarkers();
@@ -395,8 +397,11 @@ function createGalleries() {
           caption.css("background-color", "black");
           caption.css("color", "white");
           caption.css("font-size", "19px");
+          caption.css("margin-top", "50%");
+          caption.css("text-align", "center");
 
-          slides = $("<button>");
+          slides = $("<a>");
+          slides.attr("href", "#map");
           slides.attr("class", "swiper-slide");
 
           caption.append(zomatoResponse[i].name[k]); // Restaurant name retreived from zomato database

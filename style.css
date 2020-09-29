@@ -1,6 +1,9 @@
 * {
   box-sizing: border-box;
 }
+html {
+  scroll-behavior: smooth;
+}
 
 html,
 body {
@@ -42,6 +45,7 @@ h3 {
 }
 
 .nearby-list {
+  margin-top: 12px;
   margin-bottom: 15px;
 }
 
@@ -50,9 +54,6 @@ h3 {
   border: none;
 }
 
-.nearby-list {
-  margin-top: 12px;
-}
 /* Swiper */
 
 div[class*="swiper-container"] {
