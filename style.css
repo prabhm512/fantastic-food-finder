@@ -110,6 +110,10 @@ h1 {
   margin: 40px auto -240px auto;
 }
 
+.errorText {
+  font-size: 20px;
+  text-align: center;
+}
 @keyframes spin {
   0% {
     transform: rotate(0deg);

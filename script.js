@@ -320,13 +320,14 @@ function createGalleries() {
       async: true,
       error: function () {
         $(".gallery-container").text("");
-        $(".gallery-container").text(
-          "No results found. Check your internet connection."
+        var errorText = $("<p>").attr("class", "errorText");
+        errorText.text(
+          "No results found. You may not be connected to the internet or your connection may be too slow!"
         );
+        $(".gallery-container").append(errorText);
       },
       beforeSend: function (xhr) {
         xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
-        // $(".gallery-container").text("");
         loading = $("<div>").attr("class", "loader");
         $(".swiper-" + i).append(loading);
       }, // This inserts the api key into the HTTP header
