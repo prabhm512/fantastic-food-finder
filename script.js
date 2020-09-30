@@ -67,7 +67,11 @@ function initMap() {
     descrip: "",
     animation: google.maps.Animation.BOUNCE,
   });
-  locationMarker = new google.maps.Marker({ map: map, title: "Your Location", animation: google.maps.Animation.DROP });
+  locationMarker = new google.maps.Marker({
+    map: map,
+    title: "Your Location",
+    animation: google.maps.Animation.DROP,
+  });
   bounds = new google.maps.LatLngBounds();
   // hook up the click event for the drop marker
   google.maps.event.addListener(dropMarker, "click", function () {
@@ -139,7 +143,12 @@ function createMarker(place) {
   }
 
   if (place.rating) {
-    contentString += "<b>Rating:</b> " + place.rating + "/5 from " + place.user_ratings_total + " reviews<br>";
+    contentString +=
+      "<b>Rating:</b> " +
+      place.rating +
+      "/5 from " +
+      place.user_ratings_total +
+      " reviews<br>";
   } else {
     contentString += "<b>No Ratings...</b><br>";
   }
@@ -188,7 +197,7 @@ function doClickButton() {
   doClickMarker(mapMarkers[btnIndex]);
 }
 
-// for each place, create a map marker and add it as a button to the list 
+// for each place, create a map marker and add it as a button to the list
 function renderPlaces() {
   // before displaying apply the sort
   sortPlaces($("#search-type").val()); // use rating by default. Can only search by price if using nearbySearch
@@ -214,7 +223,6 @@ function renderPlaces() {
 
 // deal with the returned array of places
 function processResults(places) {
-
   // save to local storage
   localStorage.setItem(RESULTS_STORAGE_NAME, JSON.stringify(places));
   // and then load the saved places into the array
@@ -239,7 +247,11 @@ function sortPlaces(sortType) {
   if (sortType === "rating") {
     // search by rating high to low. have to account for null as not all entries have values.
     savedPlaces.sort(function (a, b) {
-      return (a.rating === null) - (b.rating === null) || -(a.rating > b.rating) || +(a.rating < b.rating);
+      return (
+        (a.rating === null) - (b.rating === null) ||
+        -(a.rating > b.rating) ||
+        +(a.rating < b.rating)
+      );
     });
   } else if (sortType === "distance") {
     // sorting by distance is the default so we don't have to make changes for it, just reload the returned results to reorder the array
@@ -249,7 +261,6 @@ function sortPlaces(sortType) {
 
 // use the google nearbySearch to get restaurants near the users current location
 function getRestaurants() {
-
   var request = {
     location: new google.maps.LatLng(userLat, userLng),
     // radius: $("#distance").val(), //for textSearch
@@ -266,14 +277,13 @@ function getRestaurants() {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       console.log(results);
       processResults(results);
-    }
-    else {
+    } else {
       console.log("return status is NOT OK");
       // first clear the list items
       $(".list-group").empty();
       // add a list item that shows the user the result
       var li = $("<li>").attr("class", "list-group-item");
-      $(li).text("No results found")
+      $(li).text("No results found");
       $(".list-group").append(li);
       // and clear any existing map markers
       clearMapMarkers();
@@ -296,6 +306,7 @@ document
 
 // Trending this week , Cheap Eats & Date Night Galleries
 function createGalleries() {
+  var loading;
   for (let i = 0; i < zomatoResponse.length; i++) {
     $.ajax({
       url:
@@ -307,10 +318,21 @@ function createGalleries() {
         userLng,
       dataType: "json",
       async: true,
+      error: function () {
+        $(".gallery-container").text("");
+        var errorText = $("<p>").attr("class", "errorText");
+        errorText.text(
+          "No results found. You may not be connected to the internet or your connection may be too slow!"
+        );
+        $(".gallery-container").append(errorText);
+      },
       beforeSend: function (xhr) {
         xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
+        loading = $("<div>").attr("class", "loader");
+        $(".swiper-" + i).append(loading);
       }, // This inserts the api key into the HTTP header
       success: function (response) {
+        $(".loader").remove();
         // Create Swiper
         var swiper = new Swiper(".swiper-container-" + i, {
           // Initially, swiper API rendered only when the page was resized.
@@ -335,7 +357,8 @@ function createGalleries() {
           },
         });
 
-        var maxTodo = (response.restaurants.length < 10) ? response.restaurants.length : 10;
+        var maxTodo =
+          response.restaurants.length < 10 ? response.restaurants.length : 10;
         // Push response to array
         for (let j = 0; j < maxTodo; j++) {
           zomatoResponse[i].images.push(
@@ -365,12 +388,9 @@ function createGalleries() {
           let counter = 0; // To uniquely identify gallery buttons
 
           caption = $("<div>").attr("class", "text");
-          caption.css("font-weight", "bold");
-          caption.css("background-color", "black");
-          caption.css("color", "white");
-          caption.css("font-size", "19px");
 
-          slides = $("<button>");
+          slides = $("<a>");
+          slides.attr("href", "#map");
           slides.attr("class", "swiper-slide");
 
           caption.append(zomatoResponse[i].name[k]); // Restaurant name retreived from zomato database
@@ -433,7 +453,6 @@ function createGalleries() {
             window.map.panTo(myLatLng);
             doClickMarker(dropMarker);
           }
-
         });
       },
     });

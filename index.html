@@ -7,8 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
     <!--  favicon from https://www.flaticon.com/authors/freepik -->
     <link rel="icon" type="image/jpg" href="./images/fork-in-a-circle.png" />
+
     <title>Fantastic Food Finder</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" type="text/css" href="style.css" />
     <!-- Font Awesome Icon Library -->
 
@@ -17,21 +23,31 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     /> -->
     <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
 
     <!-- Swiper JS -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt2X0ZpGPthNCfOYHNS2fNY57EZkUy5A&callback=initMap&libraries=places&v=weekly" defer></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt2X0ZpGPthNCfOYHNS2fNY57EZkUy5A&callback=initMap&libraries=places&v=weekly"
+      defer
+    ></script>
     <!-- moved initMap callback to script.js -->
   </head>
 
-  <body background="https://img.freepik.com/free-vector/elegant-white-background-with-shiny-lines_1017-17580.jpg?size=626&ext=jpg">
+  <body
+    background="https://img.freepik.com/free-vector/elegant-white-background-with-shiny-lines_1017-17580.jpg?size=626&ext=jpg"
+  >
     <div class="container-sm">
       <div class="row">
         <div class="col-sm-12">
           <nav class="navbar navbar-dark bg-dark">
-            <span class="navbar-brand mb-0"><h1>Fantastic Food Finder</h1></span>
+            <span class="navbar-brand mb-0"
+              ><h1>Fantastic Food Finder</h1></span
+            >
           </nav>
         </div>
       </div>
@@ -44,7 +60,11 @@
             <form class="search" name="input-form">
               <label for="search type"><em>Sort type:</em></label>
               <br />
-              <select id="search-type" name="search-type" placeholder="Search type">
+              <select
+                id="search-type"
+                name="search-type"
+                placeholder="Search type"
+              >
                 <option value="distance" selected>Closest</option>
                 <option value="rating">Rating</option>
               </select>
@@ -79,11 +99,11 @@
 
     <br />
 
-    <!-- Swiper 1 -->
-    <div class="container-sm">
+    <div class="container-sm gallery-container">
       <div class="row">
+        <!-- Swiper 1 -->
         <div class="col-sm-4">
-          <h3 style="color: yellowgreen">Trending ⚡</h3>
+          <h3 style="color: yellowgreen" class="swiper-0">Trending ⚡</h3>
           <div class="swiper-container-0">
             <div class="swiper-wrapper"></div>
             <!-- Add Pagination -->
@@ -91,9 +111,8 @@
           </div>
         </div>
         <!-- Swiper 2 -->
-
         <div class="col-sm-4">
-          <h3 style="color: green">Cheap Eats 💸</h3>
+          <h3 style="color: green" class="swiper-1">Cheap Eats 💸</h3>
           <div class="swiper-container-1">
             <div class="swiper-wrapper"></div>
             <!-- Add Pagination -->
@@ -102,7 +121,7 @@
         </div>
         <!-- Swiper 3 -->
         <div class="col-sm-4">
-          <h3 style="color: red">Date Night 💘</h3>
+          <h3 style="color: red" class="swiper-2">Date Night 💘</h3>
           <div class="swiper-container-2">
             <div class="swiper-wrapper"></div>
             <!-- Add Pagination -->
