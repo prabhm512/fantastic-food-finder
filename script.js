@@ -306,6 +306,7 @@ document
 
 // Trending this week , Cheap Eats & Date Night Galleries
 function createGalleries() {
+  var loading;
   for (let i = 0; i < zomatoResponse.length; i++) {
     $.ajax({
       url:
@@ -317,10 +318,20 @@ function createGalleries() {
         userLng,
       dataType: "json",
       async: true,
+      error: function () {
+        $(".gallery-container").text("");
+        $(".gallery-container").text(
+          "No results found. Check your internet connection."
+        );
+      },
       beforeSend: function (xhr) {
         xhr.setRequestHeader("user-key", "709ae1f9e03c2b869fcad39131684dff");
+        // $(".gallery-container").text("");
+        loading = $("<div>").attr("class", "loader");
+        $(".swiper-" + i).append(loading);
       }, // This inserts the api key into the HTTP header
       success: function (response) {
+        $(".loader").remove();
         // Create Swiper
         var swiper = new Swiper(".swiper-container-" + i, {
           // Initially, swiper API rendered only when the page was resized.
@@ -376,10 +387,6 @@ function createGalleries() {
           let counter = 0; // To uniquely identify gallery buttons
 
           caption = $("<div>").attr("class", "text");
-          // caption.css("font-weight", "bold");
-          // caption.css("background-color", "black");
-          // caption.css("color", "white");
-          // caption.css("font-size", "19px");
 
           slides = $("<a>");
           slides.attr("href", "#map");
