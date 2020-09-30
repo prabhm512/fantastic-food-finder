@@ -33,13 +33,14 @@ SO THAT I can make more informed decisions on where I can eat.
 - jQuery
 - Git
 - [VScode](https://code.visualstudio.com/) - The editor of choice
-
-#### Initial interface
-
-<img src="images/Interface.gif" alt="Image of user interface">
 <hr>
 
-#### Directions for Future Development
+## Initial interface
+
+<img src="Images/Interface.gif" alt="Image of user interface">
+<hr>
+
+### Directions for Future Development
 
 - Google Maps Directions API integration
 - Font-Awesome Star Ratings
