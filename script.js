@@ -376,10 +376,10 @@ function createGalleries() {
           let counter = 0; // To uniquely identify gallery buttons
 
           caption = $("<div>").attr("class", "text");
-          caption.css("font-weight", "bold");
-          caption.css("background-color", "black");
-          caption.css("color", "white");
-          caption.css("font-size", "19px");
+          // caption.css("font-weight", "bold");
+          // caption.css("background-color", "black");
+          // caption.css("color", "white");
+          // caption.css("font-size", "19px");
 
           slides = $("<a>");
           slides.attr("href", "#map");

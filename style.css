@@ -68,6 +68,15 @@ div[class*="swiper-container"] {
   background-size: cover;
 }
 
+.text {
+  font-weight: bold;
+  background-color: black;
+  color: white;
+  font-size: 19px;
+  margin-top: 43%;
+  text-align: center;
+}
+
 div[class*="swiper-pagination"] {
   margin-left: 42px;
 }
