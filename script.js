@@ -2,8 +2,13 @@
 const RESULTS_STORAGE_NAME = "searchResults";
 
 window.map = undefined;
-var service, lat, lng;
+var service, userLat, userLng;
 var savedPlaces = [];
+var mapMarkers = [];
+var infoWindow;
+var dropMarker;
+var locationMarker;
+var bounds;
 
 var zomatoResponse = [
   {
@@ -44,15 +49,6 @@ var zomatoResponse = [
   },
 ];
 
-var mapMarkers = [];
-var infoWindow;
-var dropMarker;
-var locationMarker;
-var bounds;
-
-// hard code location for initial testing
-// var currLocation = { lat: -33.8665433, lng: 151.1956316 }; // pyrmont
-
 // this is the callback function for the api initialisation.
 // The map and service vars have to be set here as the method isn't run until the api returns.
 // Any use of the map and service must be done after this method fires.
@@ -71,7 +67,7 @@ function initMap() {
     descrip: "",
     animation: google.maps.Animation.BOUNCE,
   });
-
+  locationMarker = new google.maps.Marker({ map: map, title: "Your Location", animation: google.maps.Animation.DROP });
   bounds = new google.maps.LatLngBounds();
   // hook up the click event for the drop marker
   google.maps.event.addListener(dropMarker, "click", function () {
@@ -79,31 +75,31 @@ function initMap() {
   });
 }
 
+// center the map at and move marker to the given lat,lng
 function moveToLocation(lat, lng) {
   const center = new google.maps.LatLng(lat, lng);
   window.map.panTo(center);
-  locationMarker = new google.maps.Marker({ map: map, position: center, title: "Your Location", animation: google.maps.Animation.DROP });
-  // when the map is set up do the call
-  createGalleries(); // Zomato collections for user location
+  locationMarker.setPosition(center);
 }
 
+// get users current location
 function getLocation() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
+    navigator.geolocation.getCurrentPosition(afterGetPosition);
   } else {
     x.innerHTML = "Geolocation is not supported by this browser.";
   }
 }
 
-function showPosition(position) {
-  lat = position.coords.latitude;
-  lng = position.coords.longitude;
-
-  moveToLocation(lat, lng);
+// the callback method for the getCurrentPosition method
+function afterGetPosition(position) {
+  userLat = position.coords.latitude;
+  userLng = position.coords.longitude;
+  moveToLocation(userLat, userLng);
   getRestaurants();
+  // when the map is set up do the call
+  createGalleries(); // Zomato collections for user location
 }
-
-getLocation();
 
 // show the info window for the given marker
 function doClickMarker(marker) {
@@ -169,7 +165,6 @@ function createMarker(place) {
   mapMarkers.push(marker);
 
   bounds.extend(marker.position);
-
 }
 
 // clean up the map markers
@@ -193,6 +188,7 @@ function doClickButton() {
   doClickMarker(mapMarkers[btnIndex]);
 }
 
+// for each place, create a map marker and add it as a button to the list 
 function renderPlaces() {
   // before displaying apply the sort
   sortPlaces($("#search-type").val()); // use rating by default. Can only search by price if using nearbySearch
@@ -251,10 +247,11 @@ function sortPlaces(sortType) {
   }
 } // sortPlaces
 
+// use the google nearbySearch to get restaurants near the users current location
 function getRestaurants() {
 
   var request = {
-    location: window.map.center,
+    location: new google.maps.LatLng(userLat, userLng),
     // radius: $("#distance").val(), //for textSearch
     // query: "restaurant" //for textSearch
     // the following properties are for the nearbySearch
@@ -278,12 +275,18 @@ function getRestaurants() {
       var li = $("<li>").attr("class", "list-group-item");
       $(li).text("No results found")
       $(".list-group").append(li);
-      // and any existing map markers
+      // and clear any existing map markers
       clearMapMarkers();
     }
   }
 }
 
+// this is called on the load of the page
+function initialise() {
+  getLocation();
+}
+
+// set up the event handler for the buttons in the list
 document
   .getElementById("submit-btn")
   .addEventListener("click", function (event) {
@@ -292,7 +295,6 @@ document
   });
 
 // Trending this week , Cheap Eats & Date Night Galleries
-
 function createGalleries() {
   for (let i = 0; i < zomatoResponse.length; i++) {
     $.ajax({
@@ -300,9 +302,9 @@ function createGalleries() {
         "https://developers.zomato.com/api/v2.1/search?collection_id=" +
         zomatoResponse[i].collection_id +
         "&lat=" +
-        lat +
+        userLat +
         "&lon=" +
-        lng,
+        userLng,
       dataType: "json",
       async: true,
       beforeSend: function (xhr) {
@@ -333,8 +335,9 @@ function createGalleries() {
           },
         });
 
+        var maxTodo = (response.restaurants.length < 10) ? response.restaurants.length : 10;
         // Push response to array
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < maxTodo; j++) {
           zomatoResponse[i].images.push(
             response.restaurants[j].restaurant.featured_image
           );
@@ -357,7 +360,7 @@ function createGalleries() {
         }
 
         // Render response on Swiper
-        for (let k = 0; k < 10; k++) {
+        for (let k = 0; k < maxTodo; k++) {
           let slides, caption; // Updates gallery images & restaurant name
           let counter = 0; // To uniquely identify gallery buttons
 
@@ -430,8 +433,11 @@ function createGalleries() {
             window.map.panTo(myLatLng);
             doClickMarker(dropMarker);
           }
+
         });
       },
     });
   }
 }
+
+initialise();
