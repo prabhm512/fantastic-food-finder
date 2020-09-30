@@ -132,3 +132,14 @@ h1 {
     height: 200px;
   }
 }
+
+@media screen and (max-width: 350px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  div[class*="swiper-container"] {
+    width: 200px;
+    height: 200px;
+  }
+}
