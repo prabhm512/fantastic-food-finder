@@ -86,12 +86,33 @@ function moveToLocation(lat, lng) {
   locationMarker.setPosition(center);
 }
 
+// handle issues with location/position
+function doLocationProblem(gotLocationService) {
+  infoWindow.setPosition(map.getCenter());
+  if (gotLocationService) {
+    // got geolocation service but couldn't get position
+    infoWindow.setContent("The Geolocation service failed.");
+  }
+  else {
+    // unable to get location service
+    infoWindow.setContent("Geolocation is not supported by this browser.");
+  }
+  // display to user
+  infoWindow.open(map);
+}
+
 // get users current location
 function getLocation() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(afterGetPosition);
-  } else {
-    x.innerHTML = "Geolocation is not supported by this browser.";
+    navigator.geolocation.getCurrentPosition(
+      (position) => afterGetPosition(position),
+      () => {
+        doLocationProblem(true);
+      }
+    )
+  }
+  else {
+    doLocationProblem(false);
   }
 }
 
