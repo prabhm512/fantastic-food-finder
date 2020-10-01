@@ -92,8 +92,7 @@ function doLocationProblem(gotLocationService) {
   if (gotLocationService) {
     // got geolocation service but couldn't get position
     infoWindow.setContent("The Geolocation service failed.");
-  }
-  else {
+  } else {
     // unable to get location service
     infoWindow.setContent("Geolocation is not supported by this browser.");
   }
@@ -109,9 +108,8 @@ function getLocation() {
       () => {
         doLocationProblem(true);
       }
-    )
-  }
-  else {
+    );
+  } else {
     doLocationProblem(false);
   }
 }
@@ -296,10 +294,10 @@ function getRestaurants() {
 
   function callback(results, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
-      console.log(results);
+      // console.log(results);
       processResults(results);
     } else {
-      console.log("return status is NOT OK");
+      // console.log("return status is NOT OK");
       // first clear the list items
       $(".list-group").empty();
       // add a list item that shows the user the result
