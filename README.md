@@ -37,7 +37,7 @@ SO THAT I can make more informed decisions on where I can eat.
 
 ## Initial interface
 
-<img src="Images/Interface.gif" alt="Image of user interface">
+<img src="resources/images/interface.gif" alt="Image of user interface">
 <hr>
 
 ### Directions for Future Development
